@@ -1,51 +1,85 @@
-/*header style*/
-header {
-    text-align: center; 
-    padding: 20px;
- }
- /*navigation menu style*/
- nav {
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     text-align: center;
-    word-spacing: 30px;
-    Padding: 10px;
- }
- /*navigation bar style*/
-nav {
-   text-align: center;
-   word-spacing: 30px;
-   padding: 10px;
-   background-color: #f5f5dc
-   font-family:lightgreen;
+    background-color: #70c5ce;
+    margin: 0;
+    overflow: hidden;
 }
-/*navigation bar button style*/
-nav a {
-   color: #000000;
-   text-decoration: none;
-   font-size: larger;
+h1 {
+    margin-top: 20px;
+    color: #fff;
 }
- /*creating the two-column layout*/
- *{
-    box-sizing: border-box;
- }
- .row {
-    display: flex;
-    flex-wrap: wrap;
- }
- .post-text-box {
-    flex: 70%;
+#gameArea {
+    position: relative;
+    width: 90vw;
+    height: 70vh;
+    background-color: #70c5ce;
+    overflow: hidden;
+    margin: 0 auto;
+    border: 2px solid #fff;
+    border-radius: 10px;
+    background-image: url("https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/089918d8-99ff-45de-a084-3fe85d0e3fcc/dg34rsu-29a3d144-dc3f-473e-a949-f73a4ba1ef7c.png/v1/fill/w_608,h_457,q_80,strp/flappy_bird_backdrop_by_lenaxux_dg34rsu-fullview.jpg?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7ImhlaWdodCI6Ijw9NDU3IiwicGF0aCI6IlwvZlwvMDg5OTE4ZDgtOTlmZi00NWRlLWEwODQtM2ZlODVkMGUzZmNjXC9kZzM0cnN1LTI5YTNkMTQ0LWRjM2YtNDczZS1hOTQ5LWY3M2E0YmExZWY3Yy5wbmciLCJ3aWR0aCI6Ijw9NjA4In1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmltYWdlLm9wZXJhdGlvbnMiXX0._FI7nnUO3ZCIz23z4_juaIbbiEa_LQd1lX6MK-0iUEE");
+}
+.bird {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    background-color: yellow;
+    border-radius: 50%;
+    top: 40%;
+    left: 20%;
+}
+.pipe {
+    position: absolute;
+    width: 52px;
+    background-color: #0f0;
+}
+.pipe-top {
+    height: 40%;
+}
+.pipe-bottom {
+    height: 60%;
+    top: 40%;
+}
+.score-board {
+    color: #fff;
+    margin-top: 10px;
+}
+#startButton {
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    background-color: #fff;
+    border: none;
+    border-radius: 5px;
+    color: #70c5ce;
+}
+#startButton:hover {
+    background-color: #ccc;
+}
+#endGameMessage {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(255, 255, 255, 0.8);
     padding: 20px;
- }
- .profile {
-    flex: 70%;
-    padding: 20px;
- }
- /*profile image and heading style*/
- .profile img {
-    width: 120px;
+    border-radius: 5px;
+    display: none;
+}
+#endGameMessage.show {
     display: block;
-    margin-left: 0;
-    margin-right: 0;
- }
- .profile h1 {
-    text-align: center;
- }
+}
+#newGameButton {
+    margin-top: 20px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    background-color: #fff;
+    border: none;
+    border-radius: 5px;
+    color: #70c5ce;
+}
+#newGameButton:hover {
+    background-color: #ccc;
+}

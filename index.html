@@ -1,55 +1,32 @@
 <!DOCTYPE html>
-<html>
-   <head>
-      <title>Home Page</title>
-      <link rel="apple-touch-icon" sizes="57x57" href="images/apple-icon-57x57.png">
-<link rel="apple-touch-icon" sizes="60x60" href="images/apple-icon-60x60.png">
-<link rel="apple-touch-icon" sizes="72x72" href="images/apple-icon-72x72.png">
-<link rel="apple-touch-icon" sizes="76x76" href="images/apple-icon-76x76.png">
-<link rel="apple-touch-icon" sizes="114x114" href="images/apple-icon-114x114.png">
-<link rel="apple-touch-icon" sizes="120x120" href="images/apple-icon-120x120.png">
-<link rel="apple-touch-icon" sizes="144x144" href="images/apple-icon-144x144.png">
-<link rel="apple-touch-icon" sizes="152x152" href="images/apple-icon-152x152.png">
-<link rel="apple-touch-icon" sizes="180x180" href="images/apple-icon-180x180.png">
-<link rel="icon" type="image/png" sizes="192x192" href="images/android-icon-192x192.png">
-<link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png">
-<link rel="icon" type="image/png" sizes="96x96" href="images/favicon-96x96.png">
-<link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16x16.png">
-<link rel="manifest" href="images/manifest.json">
-<meta name="msapplication-TileColor" content="#ffffff">
-<meta name="msapplication-TileImage" content="images/ms-icon-144x144.png">
-<meta name="theme-color" content="#ffffff">
-      </head> 
-   <body>
-      <header>   
-      <h1>HomePage</h1>
-      <nav>
-         <a href=Google.html>Google</a>
-         <a href=Youtube.html>Youtube</a>
-         <a href=Raspberry_Pi.html>Raspberry Pi</a>
-      </nav>
-      </header>
-      <main>
-         <div class=”row">
-            <div class=”post-text-box”>
-               <h1>Next upgrades coming soon...</h1>
-               <section>
-                  <h1>Gaming Zone</h1>
-                  <p>PC Games</p>
-                  <a href=Tetris_Redirect.html>Tetris</a>
-               <section></section>
-                  <a href=Snake_Redirect.html>Snake Game</a>
-               <section></section>
-                  <a href=Tick-Tac-Toe-master/index.html>Tick-Tac-Toe</a>
-                  <section>
-                  <p>Mobile Games</p>
-                  <a href=Tick-Tac-Toe-master/index.html>Tick-Tac-Toe</a>
-                  </section>
-               </section>
-            </div>
-            </div>  
-         </div>        
-      </main>
-      <footer></footer>
-    </body>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flappy Bird Game</title>
+    <link rel="icon href="https://e7.pngegg.com/pngimages/843/801/png-clipart-flappy-bird-app-store-mobile-app-flappy-hd-bird-2018-ios-iphone-thumbnail.png">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>Flappy Bird Game</h1>
+<!-- game area -->
+    <div id="gameArea">
+        <div id="bird" class="bird"></div>
+    </div>
+<!--     score board -->
+    <div class="score-board">
+        <h2>Score: <span id="score">0</span></h2>
+        <button id="startButton">Start Game</button>
+    </div>
+<!--     end popup -->
+    <div id="endGameMessage">
+        <h2>Game Over!</h2>
+        <p>Your final score is <span id="finalScore">0</span></p>
+        <button id="newGameButton">Start New Game</button>
+    </div>
+    <audio id="flapSound" src="https://www.soundjay.com/button/sounds/button-29.mp3" preload="auto"></audio>
+    <audio id="hitSound" src="https://www.soundjay.com/button/sounds/button-10.mp3" preload="auto"></audio>
+    <audio id="pointSound" src="https://www.soundjay.com/button/sounds/button-4.mp3" preload="auto"></audio>
+    <script src="script.js"></script>
+</body>
 </html>
