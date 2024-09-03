@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flappy Bird Game</title>
+    <link rel="icon href="https://e7.pngegg.com/pngimages/843/801/png-clipart-flappy-bird-app-store-mobile-app-flappy-hd-bird-2018-ios-iphone-thumbnail.png">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>Flappy Bird Game</h1>
+<!-- game area -->
+    <div id="gameArea">
+        <div id="bird" class="bird"></div>
+    </div>
+<!--     score board -->
+    <div class="score-board">
+        <h2>Score: <span id="score">0</span></h2>
+        <button id="startButton">Start Game</button>
+    </div>
+<!--     end popup -->
+    <div id="endGameMessage">
+        <h2>Game Over!</h2>
+        <p>Your final score is <span id="finalScore">0</span></p>
+        <button id="newGameButton">Start New Game</button>
+    </div>
+    <audio id="flapSound" src="https://www.soundjay.com/button/sounds/button-29.mp3" preload="auto"></audio>
+    <audio id="hitSound" src="https://www.soundjay.com/button/sounds/button-10.mp3" preload="auto"></audio>
+    <audio id="pointSound" src="https://www.soundjay.com/button/sounds/button-4.mp3" preload="auto"></audio>
+    <script src="script.js"></script>
+</body>
+</html>
