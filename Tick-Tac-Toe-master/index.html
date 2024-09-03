@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <link rel="icon" href="./images/tictactoe.png" />
+    <link rel="apple-touch-icon" href="./images/tictactoe.png" />
+    <meta name="theme-color" content="#557860" />
+    <meta
+      name="description"
+      content="Tick-Tac-Toe is my first attempt at a game engine. The player can play a punny game of tic-tac-toe against a friend. Mobile Friendly"
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Tick-Tac-Toe</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+  </head>
+  <body class='body'>
+    
+    <h1>Tick-Tac-Toe</h1>
+    
+    <div id='chalkboard'></div>
+    <div class='current-player'><p></p></div>
+    <section class='scoreboard'>
+      <h4>Scoreboard</h4>
+      <div class='tick-score'><img class='tick-sb' src='./images/tick.png' alt='tick'></div>
+      <div class='tick-wins'></div>
+      <div class='toe-score'><img class='toe-sb' src='./images/big-toe.png' alt='toe'></div>
+      <div class='toe-wins'></div>
+      <div class='draws'>draw</div>
+      <div class='draw-count'></div>
+    </section>
+    
+    <section class='tick-grid'>
+      <div class='tick1 cells'></div>
+      <div class='tick2 cells'></div>
+      <div class='tick3 cells'></div>
+      <div class='tick4 cells'></div>
+      <div class='tick5 cells'></div>
+      <div class='tick6 cells'></div>
+      <div class='tick7 cells'></div>
+      <div class='tick8 cells'></div>
+      <div class='tick9 cells'></div>
+    </section>
+    
+    <section id="volumeBox">
+      <div id='volumeCont'>
+        <img src="./images/volume-off.png" alt="volume" class='volume' id="volume-on">
+        <img src="./images/volume-on.png" alt="volume" class='volume' id="volume-off">
+      </div>
+    </section>
+    <audio id='game-audio' loop = 'loop' type = "audio/mp3">
+      <source src="./images/happy.mp3" type = "audio/mp3" loop = 'loop'>
+    </audio>
+
+    <start id='start' class='message'>
+      <div>
+        <h3 class="lgMsg">Start</h3>
+        <p class="msg">(Warning: Music Will Play)</p>
+      </div>
+    </start>
+    <win id='win' class='message'> 
+      <div>
+        <h3 class="lgMsg">Winner!</h3>
+        <p id='winReplay' class="msg replay">replay</p>
+      </div>
+    </win>
+    <draw id='draw' class='message'>
+      <div>
+        <h3 class="lgMsg">Draw!</h3>
+        <p id='drawReplay' class="msg replay">replay</p>
+      </div>
+    </draw>
+    <div id='mobileMsg'>
+      <h3>This Game Can Only Be Played In Landscpe View
+        <br/> 🥺 <br/> 👉👈
+      </h3>
+    </div>
+    <script type="text/javascript" src="app.js"></script>
+    
+  </body>
+  </html>
+  

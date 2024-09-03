@@ -1,0 +1,291 @@
+@font-face {
+  src: url('./images/eraser/EraserRegular.ttf');
+  font-family: 'EraserRegular';
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  src: url('./images/eraser/EraserDust.ttf');
+  font-family: 'EraserDust';
+  font-weight: normal;
+  font-style: normal;
+}
+
+body {
+  background-image: url('./images/forest.jpeg');
+  grid-template-columns: repeat(20, 1fr);
+  grid-template-rows: repeat(20, 1fr);
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  font-family: eraserdust;
+  height: 100vh;
+  display: grid;
+  width: 100vw;
+  padding: 0;
+  margin: 0;
+}
+
+/* Volume Control */
+#volumeBox {
+  grid-area: 3/17/6/19;
+  padding-top: 1.8vh;
+}
+#volumeCont {
+  grid-template: 1fr /1fr;
+  grid-area: 3/17/5/19;
+  display: grid;
+}
+#volume-on {
+  grid-area: 1/1/2/2;
+  margin-left: 0.5vw;
+  display: flex;
+  height: 6.2vw;
+  width: 5vw;
+}
+#volume-off {
+  padding: 0 0 0 0.5vw;
+  pointer-events: none;
+  grid-area: 1/1/2/2;
+  display: none;
+  height: 6.2vw;
+  width: 9.5vw;
+  opacity: 1;
+}
+.message {
+  grid-template: 1fr 80% 1fr / 1fr 80% 1fr;
+  background-color: rgba(0, 0, 0, 0.815);
+  grid-area: 1/1/21/21;
+  display: grid;
+}
+.message > div {
+  background-color: rgba(0, 0, 0, 0.589);
+  font-family: 'EraserDust';
+  justify-content: center;
+  flex-direction: column;
+  font-weight: lighter;
+  align-items: center;
+  grid-area: 2/2/3/3;
+  color: white;
+  display: flex;
+  margin: 0;
+}
+.message p {
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  height: 9vh;
+  margin: 0;
+}
+.lgMsg {
+  cursor: default;
+  font-size: 23vw;
+  margin: 0;
+}
+.msg {
+  font-size: 2.5vw;
+  cursor: default;
+}
+#start .lgMsg,
+.replay {
+  cursor: pointer;
+}
+.replay {
+  width: 12vw;
+}
+
+#draw {
+  display: none;
+}
+#win {
+  display: none;
+}
+
+h1 {
+  justify-content: center;
+  grid-area: 3/3/4/14;
+  align-items: center;
+  font-size: 8vw;
+  color: white;
+  display: flex;
+  margin: 0;
+}
+
+.current-player {
+  justify-content: center;
+  grid-area: 14/4/18/11;
+  align-items: center;
+  font-weight: bold;
+  font-size: 5.5vw;
+  color: white;
+  display: flex;
+}
+.current-player p {
+  margin: 0;
+}
+
+/* Chalkbord Background */
+#chalkboard {
+  background-image: url('./images/chalkboard.png');
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  grid-area: 5/2/20/20;
+}
+
+/* Scoreboard */
+.scoreboard {
+  grid-template-rows: 6vw repeat(2, 2fr);
+  grid-template-columns: repeat(3, 1fr);
+  grid-area: 7/4/14/11;
+  font-size: 3.8vw;
+  display: grid;
+}
+.scoreboard p {
+  margin: 0;
+}
+.scoreboard > div,
+h4 {
+  justify-content: center;
+  align-items: center;
+  display: flex;
+}
+/* Scoreboard Cells */
+.scoreboard > h4 {
+  border: 0.5vw dashed white;
+  grid-area: 1/1/2/4;
+  padding: 0;
+  margin: 0;
+}
+.tick-score {
+  border-bottom: 0.5vw solid white;
+  border-right: 0.5vw solid white;
+  border-left: 0.5vw solid white;
+  border-style: dashed;
+  grid-area: 2/1/3/2;
+  padding: 0;
+  margin: 0;
+}
+.tick-wins {
+  border-bottom: 0.5vw solid white;
+  border-right: 0.5vw solid white;
+  border-left: 0.5vw solid white;
+  border-style: dashed;
+  grid-area: 3/1/4/2;
+  padding: 0;
+  margin: 0;
+}
+.toe-score {
+  border-right: 0.5vw solid white;
+  border-bottom: 0.5vw solid white;
+  border-style: dashed;
+  grid-area: 2/2/3/3;
+  margin: 0;
+  padding: 0;
+}
+.toe-wins {
+  grid-area: 3/2/4/3;
+
+  border-right: 0.5vw solid white;
+  border-bottom: 0.5vw solid white;
+  border-style: dashed;
+  margin: 0;
+  padding: 0;
+}
+.draws {
+  grid-area: 2/3/3/4;
+
+  border-right: 0.5vw solid white;
+  border-bottom: 0.5vw solid white;
+  border-style: dashed;
+  margin: 0;
+  padding: 0;
+}
+.draw-count {
+  grid-area: 3/3/4/4;
+
+  border-right: 0.5vw solid white;
+  border-bottom: 0.5vw solid white;
+  border-style: dashed;
+  margin: 0;
+  padding: 0;
+}
+/* Images */
+.tick-sb {
+  width: 4.3vw;
+}
+.toe-sb {
+  width: 4.3vw;
+}
+
+/* Tick Grid */
+.tick-grid {
+  grid-area: 7/12/17/18;
+  border: none;
+
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+}
+.tick-grid > div {
+  grid-area: auto;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  margin: 0;
+  padding: 10px;
+}
+/* Tick Grid Cells */
+.tick1 {
+  border-right: 0.5vw solid white;
+  border-bottom: 0.5vw solid white;
+}
+.tick2 {
+  border-right: 0.5vw solid white;
+  border-bottom: 0.5vw solid white;
+}
+.tick3 {
+  border-bottom: 0.5vw solid white;
+}
+.tick4 {
+  border-right: 0.5vw solid white;
+  border-bottom: 0.5vw solid white;
+}
+.tick5 {
+  border-right: 0.5vw solid white;
+  border-bottom: 0.5vw solid white;
+}
+.tick6 {
+  border-bottom: 0.5vw solid white;
+}
+.tick7 {
+  border-right: 0.5vw solid white;
+}
+.tick8 {
+  border-right: 0.5vw solid white;
+}
+
+#mobileMsg {
+  display: none;
+}
+
+@media screen and (orientation: portrait) {
+  #mobileMsg {
+    position: relative;
+    overflow: hidden;
+    background-color: rgb(0, 0, 0);
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    grid-area: 1/1/21/21;
+    width: 100%;
+    height: 100%;
+  }
+  #mobileMsg * {
+    text-align: center;
+    padding: 0 10vw;
+    font-size: 10vw;
+  }
+}
