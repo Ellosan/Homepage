@@ -66,7 +66,7 @@ const gameArea = document.getElementById('gameArea');
         }
 
         function applyGravity() {
-            birdVelocity += 0.2;
+            birdVelocity += 1;
         }
 
         function handleKeyPress(event) {
