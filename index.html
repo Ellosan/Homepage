@@ -1,37 +1,60 @@
+<!doctype html>
+<html lang="en">
 <head>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ellosan — Homepage</title>
+
+  <!-- Favicon / tab logo -->
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/site.webmanifest">
+  
+  <!-- Styles -->
+  <link rel="stylesheet" href="style.css" />
 </head>
-<div class="container">
-  <header class="header section">
-    <h1 class="title">HomePage</h1>
-    <p class="subtitle">Next upgrades coming soon...</p>
-    <nav class="quick-links">
-      <a class="button" href="https://www.google.com">Google</a>
-      <a class="button" href="https://www.youtube.com">YouTube</a>
-      <a class="button" href="https://www.raspberrypi.com">Raspberry Pi</a>
-    </nav>
-  </header>
+<body>
+  <div class="container">
+    <header class="header section">
+      <h1 class="title">HomePage</h1>
+      <p class="subtitle">Next upgrades coming soon...</p>
 
-  <section class="section">
-    <h2 class="section-title">Online Gaming Zone <span class="badge">Play now</span></h2>
+      <nav class="quick-links reveal">
+        <a class="button" href="https://www.google.com">Google</a>
+        <a class="button" href="https://www.youtube.com">YouTube</a>
+        <a class="button" href="https://www.x.com">X</a>
+        <a class="button" href="https://www.reddit.com">Reddit</a>
+        <a class="button" href="https://www.instagram.com">Instagram</a>
+        <a class="button" href="https://www.discord.com">Discord</a>
+        <a class="button" href="https://www.github.com">GitHub</a>
+      </nav>
+    </header>
 
-    <h3>PC Games</h3>
-    <div class="cards">
-      <a class="card" href=".../tetris">Tetris</a>
-      <a class="card" href=".../snake">Snake Game</a>
-      <a class="card" href=".../ttt">Tic-Tac-Toe</a>
-      <a class="card" href=".../flappy">Flappy Bird</a>
-      <a class="card" href=".../flappy2">Flappy Bird V2</a>
-      <a class="card" href=".../minecraft">Minecraft</a>
+    <section class="section">
+      <h2 class="section-title">Online Gaming Zone <span class="badge">Play now</span></h2>
+
+      <h3 class="reveal">PC Games</h3>
+      <div class="cards reveal">
+        <a class="card" href="Tetris_Redirect.html">Tetris</a>
+      <a class="card" href="Snake_Redirect.html">Snake Game</a>
+      <a class="card" href="Tick-Tac-Toe-master/index.html">Tic-Tac-Toe</a>
+      <a class="card" href="Flappy-Bird-main/index.html">Flappy Bird V2</a>
+      <a class="card" href="EaglercraftX_1.8_u47_Offline_Signed.html">(Eagler)Minecraft</a>
     </div>
 
-    <h3>Mobile Games</h3>
-    <div class="cards">
-      <a class="card" href=".../ttt">Tic-Tac-Toe</a>
-      <a class="card" href=".../flappy">Flappy Bird</a>
-      <a class="card" href=".../flappy2">Flappy Bird V2</a>
-    </div>
-  </section>
+      <h3 class="reveal">Mobile Games</h3>
+      <div class="cards reveal">
+        <a class="card" href="Tick-Tac-Toe-master/index.html">Tic-Tac-Toe</a>
+        <a class="card" href="Flappy-Bird-main/index.html">Flappy Bird</a>
+        <a class="card" href="flappy-bird.html">Flappy Bird V2</a>
+      </div>
+    </section>
 
-  <footer>© Ellosan</footer>
-</div>
+    <footer class="reveal">© Ellosan</footer>
+  </div>
+
+  <!-- Device-aware layout + scroll animations -->
+  <script src="main.js" defer></script>
+</body>
+</html>
