@@ -1,0 +1,261 @@
+
+/*
+  Modern, responsive design for https://ellosan.github.io/Homepage
+  Drop this file in your repo as /style.css and add:
+    <link rel="stylesheet" href="style.css">
+*/
+
+/* ----------------------------------
+   0) Base + Theme Tokens
+-----------------------------------*/
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+:root {
+  --bg: #0f1220;
+  --bg-soft: #0b0e1a;
+  --card: #141933;
+  --card-2: #0f1530;
+  --text: #e8ecf3;
+  --muted: #a5b0c9;
+  --link: #c7d2fe;
+  --accent: #7c5cff;
+  --accent-2: #00e0ff;
+  --ring: 124, 92, 255; /* for box-shadow rgba */
+  --radius: 16px;
+  --shadow: 0 10px 30px rgba(0,0,0,.45);
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    --bg: #f6f7fb;
+    --bg-soft: #eef0f7;
+    --card: #ffffff;
+    --card-2: #f9f9ff;
+    --text: #0d1321;
+    --muted: #485063;
+    --link: #4338ca;
+    --accent: #6d28d9;
+    --accent-2: #0891b2;
+    --shadow: 0 8px 18px rgba(12, 14, 30, .08);
+  }
+}
+
+/* Reset-ish */
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+img { max-width: 100%; display: block; }
+a { color: inherit; text-decoration: none; }
+
+/* ----------------------------------
+   1) Page Layout
+-----------------------------------*/
+body {
+  font-family: "Inter", system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+  color: var(--text);
+  background:
+    radial-gradient(1200px 800px at 85% -20%, rgba(124,92,255,.20), transparent 60%),
+    radial-gradient(900px 700px at -10% 20%, rgba(0,224,255,.18), transparent 50%),
+    linear-gradient(180deg, var(--bg-soft) 0%, var(--bg) 30%, var(--bg) 100%);
+  min-height: 100vh;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+}
+
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: clamp(16px, 2vw, 28px);
+}
+
+/* Card wrapper (optional, but looks great) */
+.section {
+  background: linear-gradient(180deg, var(--card) 0%, var(--card-2) 100%);
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: clamp(16px, 2.5vw, 28px);
+  backdrop-filter: saturate(1.2) blur(6px);
+}
+
+/* ----------------------------------
+   2) Header / Hero
+-----------------------------------*/
+.header {
+  display: grid;
+  gap: 12px;
+  padding-top: clamp(8px, 1vw, 16px);
+  padding-bottom: clamp(10px, 2vw, 22px);
+}
+
+.title {
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  font-size: clamp(32px, 4vw, 56px);
+  background: linear-gradient(90deg, var(--text) 0%, var(--link) 70%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.subtitle {
+  color: var(--muted);
+  font-size: clamp(14px, 1.5vw, 18px);
+}
+
+/* Quick links row (Google / YouTube / Raspberry Pi) */
+.quick-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+  border: 1px solid rgba(255,255,255,.14);
+  box-shadow: 0 2px 0 rgba(255,255,255,.06), 0 10px 30px rgba(var(--ring), .12);
+  color: var(--link);
+  font-weight: 600;
+  transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+}
+
+.button:hover {
+  transform: translateY(-1px);
+  border-color: rgba(255,255,255,.25);
+  box-shadow: 0 3px 0 rgba(255,255,255,.08), 0 12px 34px rgba(var(--ring), .18);
+}
+
+.button:active { transform: translateY(0); }
+
+/* ----------------------------------
+   3) Sections & Headings
+-----------------------------------*/
+.section-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 6px 0 14px;
+  font-size: clamp(20px, 2vw, 28px);
+  letter-spacing: -0.01em;
+}
+
+.badge {
+  display: inline-block;
+  font-size: 12px;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, rgba(var(--ring), .18), rgba(var(--ring), .06));
+  border: 1px solid rgba(255,255,255,.16);
+  color: var(--link);
+}
+
+/* ----------------------------------
+   4) Cards Grid (PC/Mobile Games)
+-----------------------------------*/
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: clamp(10px, 2vw, 16px);
+  margin-top: 8px;
+}
+
+.card {
+  display: grid;
+  place-items: center;
+  text-align: center;
+  padding: 22px 16px;
+  min-height: 120px;
+  border-radius: 16px;
+  background:
+    radial-gradient(300px 160px at 50% -10%, rgba(var(--ring), .18), transparent 60%),
+    linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+  border: 1px solid rgba(255,255,255,.12);
+  color: var(--text);
+  font-weight: 600;
+  box-shadow: 0 6px 18px rgba(0,0,0,.20);
+  transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease, background .2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.card::after {
+  content: "";
+  position: absolute;
+  inset: -40% -40% auto auto;
+  width: 200px;
+  height: 200px;
+  background: radial-gradient(circle at center, rgba(255,255,255,.18), transparent 60%);
+  opacity: 0;
+  transform: translate3d(0,0,0) rotate(25deg);
+  transition: opacity .25s ease;
+}
+
+.card:hover {
+  transform: translateY(-3px) scale(1.01);
+  border-color: rgba(255,255,255,.22);
+  box-shadow: 0 10px 26px rgba(0,0,0,.28);
+}
+
+.card:hover::after { opacity: 1; }
+
+/* Make plain <a> links look like buttons/cards even without HTML classes */
+main a, body > a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 14px;
+  margin: 6px 6px 0 0;
+  border-radius: 12px;
+  background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+  border: 1px solid rgba(255,255,255,.14);
+  color: var(--link);
+  font-weight: 600;
+  box-shadow: 0 2px 0 rgba(255,255,255,.06);
+  transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+}
+main a:hover, body > a:hover {
+  transform: translateY(-1px);
+  border-color: rgba(255,255,255,.25);
+  box-shadow: 0 3px 0 rgba(255,255,255,.08), 0 12px 34px rgba(var(--ring), .18);
+}
+
+/* ----------------------------------
+   5) Footer
+-----------------------------------*/
+footer {
+  color: var(--muted);
+  font-size: 13px;
+  padding: 24px 0 40px;
+  text-align: center;
+  opacity: .9;
+}
+
+/* ----------------------------------
+   6) Accessibility
+-----------------------------------*/
+:focus-visible {
+  outline: 2px solid rgb(var(--ring));
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; }
+}
+
+/* ----------------------------------
+   7) Optional Utility Classes
+-----------------------------------*/
+.mt-2 { margin-top: .5rem; }
+.mt-4 { margin-top: 1rem; }
+.mt-6 { margin-top: 1.5rem; }
+.mb-2 { margin-bottom: .5rem; }
+.mb-4 { margin-bottom: 1rem; }
+.mb-6 { margin-bottom: 1.5rem; }
+.center { text-align: center; }
