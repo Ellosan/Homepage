@@ -259,3 +259,58 @@ footer {
 .mb-4 { margin-bottom: 1rem; }
 .mb-6 { margin-bottom: 1.5rem; }
 .center { text-align: center; }
+
+/* ===========================
+   Responsive breakpoints
+   =========================== */
+@media (max-width: 599px) {      /* Phone */
+  .header { text-align: left; }
+  .quick-links { gap: 8px; }
+  .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (min-width: 600px) and (max-width: 1023px) { /* Tablet */
+  .cards { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .quick-links { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: thin; }
+}
+
+@media (min-width: 1024px) {     /* Desktop */
+  .cards { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+
+/* Device-specific flourishes (optional) */
+.device-phone .section { padding: 16px; }
+.device-tablet .section { padding: 22px; }
+.device-desktop .section { padding: 28px; }
+
+/* ===========================
+   Scroll-in animations
+   =========================== */
+.reveal {
+  opacity: 0;
+  transform: translateY(16px) scale(0.99);
+  transition: opacity .6s ease, transform .6s ease;
+  will-change: opacity, transform;
+}
+
+.reveal.reveal-in {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+.reveal:nth-child(1) { transition-delay: .05s; }
+.reveal:nth-child(2) { transition-delay: .1s; }
+.reveal:nth-child(3) { transition-delay: .15s; }
+.reveal:nth-child(4) { transition-delay: .2s; }
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .reveal { opacity: 1 !important; transform: none !important; transition: none !important; }
+}
+
+/* Nice horizontal scrolling for quick links on tablet/phone */
+.quick-links {
+  -webkit-overflow-scrolling: touch;
+  scroll-snap-type: x mandatory;
+}
+.quick-links .button { scroll-snap-align: start; }
