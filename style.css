@@ -191,45 +191,6 @@ body {
   }
 }
 
-/* Wrapper so sparkles can sit around the title */
-.xmas-heading-wrap {
-  position: relative;
-  display: inline-block;
-  padding: 0.4rem 0.8rem;
-}
-
-/* Layer that holds the sparkles */
-.sparkle-layer {
-  position: absolute;
-  inset: -20px;       /* expand around the text */
-  pointer-events: none;
-  overflow: visible;
-}
-
-/* Individual sparkles */
-.sparkle {
-  position: absolute;
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: radial-gradient(circle, #fff 0%, #fffa 40%, transparent 70%);
-  opacity: 0;
-  transform: translateY(0) scale(0.5);
-  animation: sparkleTwinkle 1.8s infinite ease-in-out;
-}
-
-/* Little twinkle animation */
-@keyframes sparkleTwinkle {
-  0%, 100% {
-    transform: scale(0.4);
-    opacity: 0.1;
-  }
-  50% {
-    transform: scale(1);
-    opacity: 1;
-  }
-}
-
 /* ----------------------------------
    4) Cards Grid (PC/Mobile Games)
 -----------------------------------*/
