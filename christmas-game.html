@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Christmas Gift Catcher</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color-scheme: dark;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle at top, #ffecd2 0%, #fcb69f 25%, #b31217 80%);
+      color: #fff;
+    }
+
+    .game-wrapper {
+      width: 100%;
+      max-width: 480px;
+      padding: 16px;
+      border-radius: 24px;
+      background: rgba(10, 10, 20, 0.8);
+      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(10px);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .title {
+      text-align: center;
+      margin-bottom: 10px;
+    }
+
+    .title h1 {
+      font-size: 1.7rem;
+      letter-spacing: 1px;
+    }
+
+    .title p {
+      font-size: 0.85rem;
+      opacity: 0.8;
+      margin-top: 4px;
+    }
+
+    .hud {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      font-size: 0.9rem;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+    }
+
+    .hud .stat {
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .hud button {
+      cursor: pointer;
+      border-radius: 999px;
+      border: none;
+      padding: 7px 16px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      background: linear-gradient(135deg, #ff4b2b, #ff416c);
+      color: #fff;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+      transition: transform 0.1s ease, box-shadow 0.1s ease;
+    }
+
+    .hud button:active {
+      transform: translateY(1px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+    }
+
+    #gameArea {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 9 / 16;
+      max-height: 560px;
+      background: linear-gradient(to bottom, #013, #025) fixed;
+      border-radius: 18px;
+      overflow: hidden;
+      border: 2px solid rgba(255, 255, 255, 0.15);
+    }
+
+    /* Simple snow background */
+    #gameArea::before,
+    #gameArea::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background-image:
+        radial-gradient(2px 2px at 10% 20%, rgba(255, 255, 255, 0.8) 50%, transparent 51%),
+        radial-gradient(2px 2px at 80% 10%, rgba(255, 255, 255, 0.7) 50%, transparent 51%),
+        radial-gradient(2px 2px at 30% 70%, rgba(255, 255, 255, 0.8) 50%, transparent 51%),
+        radial-gradient(2px 2px at 60% 40%, rgba(255, 255, 255, 0.8) 50%, transparent 51%);
+      opacity: 0.6;
+      animation: snow-fall 12s linear infinite;
+    }
+
+    #gameArea::after {
+      animation-duration: 18s;
+      opacity: 0.4;
+      filter: blur(1px);
+    }
+
+    @keyframes snow-fall {
+      0% {
+        transform: translateY(-10%);
+      }
+      100% {
+        transform: translateY(10%);
+      }
+    }
+
+    #player {
+      position: absolute;
+      bottom: 10px;
+      width: 60px;
+      height: 40px;
+      border-radius: 10px;
+      background: radial-gradient(circle at 30% 30%, #fff 0, #fff 40%, #c00 41%, #c00 100%);
+      box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.5), 0 8px 18px rgba(0, 0, 0, 0.4);
+    }
+
+    /* Simple Santa face / hat decoration using pseudo elements */
+    #player::before,
+    #player::after {
+      content: "";
+      position: absolute;
+    }
+
+    #player::before {
+      /* hat */
+      width: 70%;
+      height: 14px;
+      background: #d60000;
+      border-radius: 12px 12px 6px 6px;
+      top: -10px;
+      left: 15%;
+      box-shadow: 0 0 0 3px #fff;
+    }
+
+    #player::after {
+      /* beard */
+      width: 70%;
+      height: 14px;
+      background: #fff;
+      bottom: -6px;
+      left: 15%;
+      border-radius: 50%;
+    }
+
+    .gift {
+      position: absolute;
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, #2ecc71, #16a085);
+      box-shadow: 0 5px 12px rgba(0, 0, 0, 0.45);
+      transform-origin: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+    }
+
+    .gift::before,
+    .gift::after {
+      content: "";
+      position: absolute;
+      background: rgba(255, 255, 255, 0.9);
+    }
+
+    .gift::before {
+      width: 5px;
+      height: 100%;
+    }
+
+    .gift::after {
+      width: 100%;
+      height: 5px;
+    }
+
+    .gift span {
+      position: relative;
+      z-index: 1;
+    }
+
+    .message-overlay {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      background: radial-gradient(circle at center, rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0.95));
+      color: #fff;
+      text-align: center;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .message-overlay h2 {
+      font-size: 1.5rem;
+      margin-bottom: 4px;
+    }
+
+    .message-overlay p {
+      font-size: 0.95rem;
+      max-width: 280px;
+      margin: 0 auto;
+      opacity: 0.9;
+    }
+
+    .message-overlay button {
+      margin-top: 10px;
+      cursor: pointer;
+      border-radius: 999px;
+      border: none;
+      padding: 8px 18px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      background: linear-gradient(135deg, #2ecc71, #1abc9c);
+      color: #062;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .controls-hint {
+      margin-top: 8px;
+      font-size: 0.8rem;
+      text-align: center;
+      opacity: 0.8;
+    }
+
+    .touch-controls {
+      margin-top: 8px;
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+    }
+
+    .touch-btn {
+      flex: 0 0 auto;
+      min-width: 70px;
+      padding: 7px 0;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      background: rgba(255, 255, 255, 0.06);
+      color: #fff;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+
+    .touch-btn:active {
+      background: rgba(255, 255, 255, 0.18);
+    }
+
+    @media (max-width: 480px) {
+      .title h1 {
+        font-size: 1.4rem;
+      }
+      #player {
+        width: 52px;
+        height: 34px;
+      }
+      .gift {
+        width: 28px;
+        height: 28px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="game-wrapper">
+    <div class="title">
+      <h1>Christmas Gift Catcher 🎄</h1>
+      <p>Move Santa and catch as many presents as you can before time runs out!</p>
+    </div>
+
+    <div class="hud">
+      <div class="stat">Score: <span id="score">0</span></div>
+      <div class="stat">Time: <span id="time">60</span>s</div>
+      <button id="startBtn">Start</button>
+    </div>
+
+    <div id="gameArea">
+      <div id="player"></div>
+
+      <div id="message" class="message-overlay hidden">
+        <h2>Round over! 🎅</h2>
+        <p>You caught <span id="finalScore">0</span> gifts. Can you beat your high score?</p>
+        <button id="playAgainBtn">Play again</button>
+      </div>
+    </div>
+
+    <p class="controls-hint">
+      Desktop: ← → or A / D to move. &nbsp; Mobile: use the buttons below.
+    </p>
+    <div class="touch-controls">
+      <button class="touch-btn" id="leftBtn">◀ Left</button>
+      <button class="touch-btn" id="rightBtn">Right ▶</button>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      const gameArea = document.getElementById("gameArea");
+      const player = document.getElementById("player");
+      const scoreEl = document.getElementById("score");
+      const timeEl = document.getElementById("time");
+      const startBtn = document.getElementById("startBtn");
+      const message = document.getElementById("message");
+      const finalScoreEl = document.getElementById("finalScore");
+      const playAgainBtn = document.getElementById("playAgainBtn");
+      const leftBtn = document.getElementById("leftBtn");
+      const rightBtn = document.getElementById("rightBtn");
+
+      let gameActive = false;
+      let gifts = [];
+      let score = 0;
+      let timeLeft = 60;
+      let playerX = 0;
+      let animationId = null;
+      let spawnIntervalId = null;
+      let timerIntervalId = null;
+      let lastFrameTime = null;
+
+      const playerSpeed = 260; // px per second
+      const giftSpeed = 140;   // px per second
+      const spawnEveryMs = 900;
+
+      const keys = {
+        left: false,
+        right: false,
+      };
+
+      function clamp(x, min, max) {
+        return Math.min(max, Math.max(min, x));
+      }
+
+      function resetPlayerPosition() {
+        const areaWidth = gameArea.clientWidth;
+        const playerWidth = player.offsetWidth;
+        playerX = (areaWidth - playerWidth) / 2;
+        player.style.left = playerX + "px";
+      }
+
+      function resetGame() {
+        score = 0;
+        timeLeft = 60;
+        scoreEl.textContent = score.toString();
+        timeEl.textContent = timeLeft.toString();
+        lastFrameTime = null;
+
+        // remove gifts from DOM
+        gifts.forEach((gift) => {
+          if (gift.parentNode === gameArea) {
+            gameArea.removeChild(gift);
+          }
+        });
+        gifts = [];
+
+        resetPlayerPosition();
+      }
+
+      function spawnGift() {
+        if (!gameActive) return;
+
+        const gift = document.createElement("div");
+        gift.className = "gift";
+
+        // emoji for fun
+        const s = document.createElement("span");
+        s.textContent = "🎁";
+        gift.appendChild(s);
+
+        const areaWidth = gameArea.clientWidth;
+        const giftWidth = 32; // approx; CSS width
+        const minX = 0;
+        const maxX = areaWidth - giftWidth;
+        const x = Math.random() * (maxX - minX) + minX;
+
+        gift.style.left = x + "px";
+        gift.style.top = "-40px";
+        gift.dataset.y = "-40";
+
+        gameArea.appendChild(gift);
+        gifts.push(gift);
+      }
+
+      function startSpawningGifts() {
+        spawnGift();
+        spawnIntervalId = window.setInterval(spawnGift, spawnEveryMs);
+      }
+
+      function stopSpawningGifts() {
+        if (spawnIntervalId !== null) {
+          window.clearInterval(spawnIntervalId);
+          spawnIntervalId = null;
+        }
+      }
+
+      function startTimer() {
+        timerIntervalId = window.setInterval(() => {
+          if (!gameActive) return;
+          timeLeft -= 1;
+          if (timeLeft < 0) timeLeft = 0;
+          timeEl.textContent = timeLeft.toString();
+
+          if (timeLeft <= 0) {
+            endGame();
+          }
+        }, 1000);
+      }
+
+      function stopTimer() {
+        if (timerIntervalId !== null) {
+          window.clearInterval(timerIntervalId);
+          timerIntervalId = null;
+        }
+      }
+
+      function update(timestamp) {
+        if (!gameActive) return;
+
+        if (lastFrameTime === null) {
+          lastFrameTime = timestamp;
+        }
+        const deltaMs = timestamp - lastFrameTime;
+        lastFrameTime = timestamp;
+        const deltaSeconds = deltaMs / 1000;
+
+        // move player based on keys
+        const areaWidth = gameArea.clientWidth;
+        const playerWidth = player.offsetWidth;
+        let velocity = 0;
+        if (keys.left) velocity -= playerSpeed;
+        if (keys.right) velocity += playerSpeed;
+        playerX += velocity * deltaSeconds;
+        playerX = clamp(playerX, 0, areaWidth - playerWidth);
+        player.style.left = playerX + "px";
+
+        // move gifts
+        const playerRect = player.getBoundingClientRect();
+        const areaRect = gameArea.getBoundingClientRect();
+        const removeList = [];
+
+        gifts.forEach((gift, index) => {
+          const currentY = parseFloat(gift.dataset.y || "0");
+          const newY = currentY + giftSpeed * deltaSeconds;
+          gift.dataset.y = String(newY);
+          gift.style.top = newY + "px";
+
+          // out of bounds?
+          if (newY > gameArea.clientHeight + 40) {
+            removeList.push(index);
+            if (gift.parentNode === gameArea) {
+              gameArea.removeChild(gift);
+            }
+            return;
+          }
+
+          // collision
+          const giftRect = gift.getBoundingClientRect();
+          const intersects =
+            giftRect.left < playerRect.right &&
+            giftRect.right > playerRect.left &&
+            giftRect.top < playerRect.bottom &&
+            giftRect.bottom > playerRect.top;
+
+          if (intersects) {
+            score += 1;
+            scoreEl.textContent = score.toString();
+            removeList.push(index);
+            if (gift.parentNode === gameArea) {
+              gameArea.removeChild(gift);
+            }
+
+            // small "pop" animation
+            player.style.transform = "translateY(-3px)";
+            setTimeout(() => {
+              player.style.transform = "";
+            }, 80);
+          }
+        });
+
+        // clean up gifts array (from end to start)
+        for (let i = removeList.length - 1; i >= 0; i--) {
+          gifts.splice(removeList[i], 1);
+        }
+
+        animationId = window.requestAnimationFrame(update);
+      }
+
+      function endGame() {
+        if (!gameActive) return;
+        gameActive = false;
+
+        if (animationId !== null) {
+          window.cancelAnimationFrame(animationId);
+          animationId = null;
+        }
+        stopSpawningGifts();
+        stopTimer();
+
+        finalScoreEl.textContent = score.toString();
+        message.classList.remove("hidden");
+        startBtn.textContent = "Restart";
+      }
+
+      function startGame() {
+        if (gameActive) return;
+        gameActive = true;
+        message.classList.add("hidden");
+        resetGame();
+        startSpawningGifts();
+        startTimer();
+        animationId = window.requestAnimationFrame(update);
+      }
+
+      // keyboard controls
+      window.addEventListener("keydown", (e) => {
+        if (e.key === "ArrowLeft" || e.key === "a" || e.key === "A") {
+          keys.left = true;
+        } else if (e.key === "ArrowRight" || e.key === "d" || e.key === "D") {
+          keys.right = true;
+        }
+      });
+
+      window.addEventListener("keyup", (e) => {
+        if (e.key === "ArrowLeft" || e.key === "a" || e.key === "A") {
+          keys.left = false;
+        } else if (e.key === "ArrowRight" || e.key === "d" || e.key === "D") {
+          keys.right = false;
+        }
+      });
+
+      // touch buttons (mobile)
+      function handleTouchStart(direction) {
+        if (direction === "left") {
+          keys.left = true;
+        } else {
+          keys.right = true;
+        }
+      }
+
+      function handleTouchEnd(direction) {
+        if (direction === "left") {
+          keys.left = false;
+        } else {
+          keys.right = false;
+        }
+      }
+
+      ["touchstart", "mousedown"].forEach((evt) => {
+        leftBtn.addEventListener(evt, (e) => {
+          e.preventDefault();
+          handleTouchStart("left");
+        });
+        rightBtn.addEventListener(evt, (e) => {
+          e.preventDefault();
+          handleTouchStart("right");
+        });
+      });
+
+      ["touchend", "touchcancel", "mouseup", "mouseleave"].forEach((evt) => {
+        leftBtn.addEventListener(evt, () => handleTouchEnd("left"));
+        rightBtn.addEventListener(evt, () => handleTouchEnd("right"));
+      });
+
+      // resize handling to keep Santa centered nicely on layout changes
+      window.addEventListener("resize", () => {
+        // Re-clamp current position to new width
+        const areaWidth = gameArea.clientWidth;
+        const playerWidth = player.offsetWidth;
+        playerX = clamp(playerX, 0, areaWidth - playerWidth);
+        player.style.left = playerX + "px";
+      });
+
+      startBtn.addEventListener("click", startGame);
+      playAgainBtn.addEventListener("click", startGame);
+
+      // Initial position after layout
+      window.addEventListener("load", resetPlayerPosition);
+    })();
+  </script>
+</body>
+</html>
