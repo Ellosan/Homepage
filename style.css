@@ -163,6 +163,31 @@ body {
   font-weight: 900;
 }
 
+.glowing-xmas {
+  font-weight: 900;
+  font-size: 2rem;
+  text-transform: uppercase;
+  background: linear-gradient(90deg, red, green);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: xmasGlow 2s ease-in-out infinite alternate;
+}
+
+@keyframes xmasGlow {
+  0% {
+    text-shadow: 
+      0 0 8px red,
+      0 0 16px red,
+      0 0 24px red;
+  }
+  100% {
+    text-shadow: 
+      0 0 8px green,
+      0 0 16px green,
+      0 0 24px green;
+  }
+}
+
 /* ----------------------------------
    4) Cards Grid (PC/Mobile Games)
 -----------------------------------*/
