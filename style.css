@@ -156,6 +156,13 @@ body {
   color: var(--link);
 }
 
+.candy-cane {
+  background: linear-gradient(90deg, red 0%, green 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: 900;
+}
+
 /* ----------------------------------
    4) Cards Grid (PC/Mobile Games)
 -----------------------------------*/
