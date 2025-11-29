@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Christmas Memory Match</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color-scheme: dark;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle at top, #f9f7d9 0%, #ffb347 35%, #c02425 90%);
+      color: #fff;
+    }
+
+    .game-wrapper {
+      width: 100%;
+      max-width: 520px;
+      padding: 16px;
+      border-radius: 24px;
+      background: rgba(5, 10, 25, 0.9);
+      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(10px);
+    }
+
+    .title {
+      text-align: center;
+      margin-bottom: 12px;
+    }
+
+    .title h1 {
+      font-size: 1.8rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .title p {
+      font-size: 0.85rem;
+      opacity: 0.85;
+      margin-top: 4px;
+    }
+
+    .hud {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      font-size: 0.9rem;
+      margin-bottom: 10px;
+    }
+
+    .hud .stat {
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    .hud button {
+      cursor: pointer;
+      border-radius: 999px;
+      border: none;
+      padding: 7px 16px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      background: linear-gradient(135deg, #27ae60, #2ecc71);
+      color: #fff;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.35);
+      transition: transform 0.1s ease, box-shadow 0.1s ease;
+    }
+
+    .hud button:active {
+      transform: translateY(1px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+    }
+
+    .board {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 6px;
+    }
+
+    .card {
+      position: relative;
+      width: 100%;
+      padding-bottom: 100%; /* square */
+      perspective: 800px;
+      cursor: pointer;
+    }
+
+    .card-inner {
+      position: absolute;
+      inset: 0;
+      border-radius: 14px;
+      transition: transform 0.45s ease;
+      transform-style: preserve-3d;
+    }
+
+    .card.flipped .card-inner,
+    .card.matched .card-inner {
+      transform: rotateY(180deg);
+    }
+
+    .card-face {
+      position: absolute;
+      inset: 0;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      backface-visibility: hidden;
+    }
+
+    .card-front {
+      background: linear-gradient(145deg, #b31217, #2b2f77);
+      border: 2px solid rgba(255, 255, 255, 0.18);
+      box-shadow: 0 10px 18px rgba(0, 0, 0, 0.55);
+      font-size: 1.5rem;
+    }
+
+    .card-front::before {
+      content: "🎄";
+      opacity: 0.85;
+    }
+
+    .card-back {
+      background: radial-gradient(circle at top, #ffffff 0%, #f2f2f2 18%, #dcdcdc 50%, #a0a0a0 100%);
+      transform: rotateY(180deg);
+      font-size: 2.1rem;
+      box-shadow: 0 10px 18px rgba(0, 0, 0, 0.6);
+    }
+
+    .card.matched .card-inner {
+      box-shadow: 0 0 0 2px #2ecc71, 0 0 16px rgba(46, 204, 113, 0.7);
+    }
+
+    .message {
+      margin-top: 12px;
+      font-size: 0.9rem;
+      text-align: center;
+      min-height: 1.2em;
+      opacity: 0.9;
+    }
+
+    .message strong {
+      color: #f1c40f;
+    }
+
+    .confetti {
+      position: fixed;
+      pointer-events: none;
+      inset: 0;
+      overflow: hidden;
+      z-index: 9999;
+    }
+
+    .confetti-piece {
+      position: absolute;
+      width: 8px;
+      height: 14px;
+      border-radius: 3px;
+      opacity: 0.9;
+      animation: confettiFall linear forwards;
+    }
+
+    @keyframes confettiFall {
+      0% {
+        transform: translate3d(0, -10vh, 0) rotateZ(0deg);
+      }
+      100% {
+        transform: translate3d(var(--x-move), 110vh, 0) rotateZ(360deg);
+      }
+    }
+
+    .tip {
+      margin-top: 10px;
+      font-size: 0.8rem;
+      opacity: 0.8;
+      text-align: center;
+    }
+
+    @media (max-width: 480px) {
+      .title h1 {
+        font-size: 1.5rem;
+      }
+      .card-back {
+        font-size: 1.84rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="game-wrapper">
+    <div class="title">
+      <h1>Christmas Memory Match 🎅</h1>
+      <p>Flip the cards and find all the matching Christmas pairs!</p>
+    </div>
+
+    <div class="hud">
+      <div class="stat">Moves: <span id="moves">0</span></div>
+      <div class="stat">Time: <span id="time">0</span>s</div>
+      <div class="stat">Best: <span id="best">–</span></div>
+      <button id="restartBtn">Restart</button>
+    </div>
+
+    <div class="board" id="board"></div>
+
+    <p class="message" id="message"></p>
+    <p class="tip">Tip: Try to remember where each emoji is. Fewer moves = better score!</p>
+  </div>
+
+  <script>
+    (function () {
+      const boardEl = document.getElementById("board");
+      const movesEl = document.getElementById("moves");
+      const timeEl = document.getElementById("time");
+      const bestEl = document.getElementById("best");
+      const messageEl = document.getElementById("message");
+      const restartBtn = document.getElementById("restartBtn");
+
+      const EMOJIS = ["🎄", "🎁", "⛄", "⭐", "🦌", "🍪", "🕯️", "🍬"]; // 8 pairs = 16 cards
+      const TOTAL_PAIRS = EMOJIS.length;
+
+      let deck = [];
+      let firstCard = null;
+      let secondCard = null;
+      let lockBoard = false;
+      let moves = 0;
+      let matchesFound = 0;
+      let timerInterval = null;
+      let timeElapsed = 0;
+      let gameStarted = false;
+      let bestScore = null; // store as { moves, time }
+
+      function shuffle(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
+      }
+
+      function createDeck() {
+        deck = shuffle([...EMOJIS, ...EMOJIS]).map((emoji, index) => ({
+          id: index,
+          emoji,
+        }));
+      }
+
+      function renderBoard() {
+        boardEl.innerHTML = "";
+        deck.forEach((cardData) => {
+          const card = document.createElement("div");
+          card.className = "card";
+          card.dataset.id = cardData.id;
+          card.dataset.emoji = cardData.emoji;
+
+          const inner = document.createElement("div");
+          inner.className = "card-inner";
+
+          const front = document.createElement("div");
+          front.className = "card-face card-front";
+
+          const back = document.createElement("div");
+          back.className = "card-face card-back";
+          back.textContent = cardData.emoji;
+
+          inner.appendChild(front);
+          inner.appendChild(back);
+          card.appendChild(inner);
+          boardEl.appendChild(card);
+
+          card.addEventListener("click", () => handleCardClick(card));
+        });
+      }
+
+      function startTimer() {
+        if (timerInterval) return;
+        timerInterval = window.setInterval(() => {
+          timeElapsed++;
+          timeEl.textContent = timeElapsed.toString();
+        }, 1000);
+      }
+
+      function stopTimer() {
+        if (timerInterval) {
+          window.clearInterval(timerInterval);
+          timerInterval = null;
+        }
+      }
+
+      function resetStats() {
+        moves = 0;
+        matchesFound = 0;
+        timeElapsed = 0;
+        gameStarted = false;
+        movesEl.textContent = "0";
+        timeEl.textContent = "0";
+        messageEl.textContent = "";
+        stopTimer();
+      }
+
+      function resetBoard() {
+        firstCard = null;
+        secondCard = null;
+        lockBoard = false;
+      }
+
+      function handleCardClick(card) {
+        if (lockBoard) return;
+        if (card === firstCard) return;
+        if (card.classList.contains("matched")) return;
+
+        // Start the timer on first user action
+        if (!gameStarted) {
+          gameStarted = true;
+          startTimer();
+        }
+
+        card.classList.add("flipped");
+
+        if (!firstCard) {
+          firstCard = card;
+          return;
+        }
+
+        secondCard = card;
+        moves++;
+        movesEl.textContent = moves.toString();
+
+        checkForMatch();
+      }
+
+      function checkForMatch() {
+        const isMatch =
+          firstCard.dataset.emoji === secondCard.dataset.emoji;
+
+        if (isMatch) {
+          disableMatchedCards();
+        } else {
+          unflipCards();
+        }
+      }
+
+      function disableMatchedCards() {
+        firstCard.classList.add("matched");
+        secondCard.classList.add("matched");
+
+        matchesFound++;
+        messageEl.innerHTML = `Nice! You found a pair of <strong>${firstCard.dataset.emoji}</strong>.`;
+
+        resetBoard();
+
+        if (matchesFound === TOTAL_PAIRS) {
+          endGame();
+        }
+      }
+
+      function unflipCards() {
+        lockBoard = true;
+        messageEl.textContent = "Not quite… try again!";
+
+        window.setTimeout(() => {
+          firstCard.classList.remove("flipped");
+          secondCard.classList.remove("flipped");
+          resetBoard();
+        }, 700);
+      }
+
+      function loadBestFromStorage() {
+        try {
+          const raw = window.localStorage.getItem("xmasMemoryBest");
+          if (!raw) return;
+          const parsed = JSON.parse(raw);
+          if (
+            typeof parsed === "object" &&
+            typeof parsed.moves === "number" &&
+            typeof parsed.time === "number"
+          ) {
+            bestScore = parsed;
+          }
+        } catch (e) {
+          // ignore
+        }
+      }
+
+      function saveBestToStorage() {
+        if (!bestScore) return;
+        try {
+          window.localStorage.setItem(
+            "xmasMemoryBest",
+            JSON.stringify(bestScore)
+          );
+        } catch (e) {
+          // ignore
+        }
+      }
+
+      function updateBestDisplay() {
+        if (!bestScore) {
+          bestEl.textContent = "–";
+        } else {
+          bestEl.textContent = `${bestScore.moves} moves / ${bestScore.time}s`;
+        }
+      }
+
+      function maybeUpdateBest() {
+        if (!bestScore) {
+          bestScore = { moves, time: timeElapsed };
+        } else {
+          // "better" = fewer moves, tie-breaker: less time
+          if (
+            moves < bestScore.moves ||
+            (moves === bestScore.moves && timeElapsed < bestScore.time)
+          ) {
+            bestScore = { moves, time: timeElapsed };
+          } else {
+            return;
+          }
+        }
+        saveBestToStorage();
+        updateBestDisplay();
+      }
+
+      function createConfetti() {
+        const container = document.createElement("div");
+        container.className = "confetti";
+        document.body.appendChild(container);
+
+        const colors = ["#e74c3c", "#f1c40f", "#2ecc71", "#3498db", "#9b59b6", "#ffffff"];
+
+        const pieces = 80;
+        for (let i = 0; i < pieces; i++) {
+          const piece = document.createElement("div");
+          piece.className = "confetti-piece";
+          const color = colors[Math.floor(Math.random() * colors.length)];
+          piece.style.backgroundColor = color;
+          piece.style.left = Math.random() * 100 + "%";
+          piece.style.opacity = (0.6 + Math.random() * 0.4).toString();
+          const duration = 2.5 + Math.random() * 1.5;
+          piece.style.animationDuration = duration + "s";
+          const xMove = (Math.random() * 80 - 40).toFixed(1) + "px";
+          piece.style.setProperty("--x-move", xMove);
+          container.appendChild(piece);
+        }
+
+        window.setTimeout(() => {
+          document.body.removeChild(container);
+        }, 4500);
+      }
+
+      function endGame() {
+        stopTimer();
+        maybeUpdateBest();
+        messageEl.innerHTML =
+          `🎉 You matched all the pairs in <strong>${moves}</strong> moves and <strong>${timeElapsed}</strong> seconds!`;
+        createConfetti();
+      }
+
+      function restartGame() {
+        resetStats();
+        createDeck();
+        renderBoard();
+      }
+
+      // Init
+      loadBestFromStorage();
+      updateBestDisplay();
+      restartGame();
+
+      restartBtn.addEventListener("click", () => {
+        restartGame();
+      });
+    })();
+  </script>
+</body>
+</html>
