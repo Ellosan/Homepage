@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Christmas House Decorator</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color-scheme: dark;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle at top, #fdfbfb 0%, #ebedee 28%, #74b9ff 70%, #2d3436 100%);
+      color: #fff;
+    }
+
+    .game-wrapper {
+      width: 100%;
+      max-width: 960px;
+      padding: 16px;
+      border-radius: 24px;
+      background: rgba(7, 15, 35, 0.94);
+      box-shadow: 0 20px 45px rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(10px);
+      display: grid;
+      grid-template-columns: minmax(0, 260px) minmax(0, 1fr);
+      gap: 16px;
+    }
+
+    @media (max-width: 760px) {
+      .game-wrapper {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    .sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .title {
+      text-align: left;
+    }
+
+    .title h1 {
+      font-size: 1.6rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .title p {
+      font-size: 0.85rem;
+      opacity: 0.9;
+      margin-top: 4px;
+      line-height: 1.4;
+    }
+
+    .panel {
+      padding: 10px 12px;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .panel h2 {
+      font-size: 0.95rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      opacity: 0.9;
+      margin-bottom: 8px;
+    }
+
+    .palette {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .palette-button {
+      flex: 1 1 48%;
+      min-width: 100px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      background: rgba(255, 255, 255, 0.04);
+      color: #fff;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: transform 0.08s ease, box-shadow 0.08s ease,
+        background 0.12s ease, border-color 0.12s ease;
+    }
+
+    .palette-button span.emoji {
+      font-size: 1.2rem;
+    }
+
+    .palette-button.active {
+      background: linear-gradient(135deg, #ff7675, #fdcb6e);
+      border-color: rgba(0, 0, 0, 0.4);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.55);
+      transform: translateY(-1px);
+      color: #211f1f;
+    }
+
+    .palette-button:active {
+      transform: translateY(0);
+      box-shadow: 0 3px 6px rgba(0, 0, 0, 0.6);
+    }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 6px;
+    }
+
+    .controls button {
+      flex: 1 1 48%;
+      min-width: 110px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: none;
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #fff;
+      background: linear-gradient(135deg, #00b894, #00cec9);
+      box-shadow: 0 6px 14px rgba(0, 0, 0, 0.5);
+      transition: transform 0.08s ease, box-shadow 0.08s ease,
+        filter 0.1s ease;
+    }
+
+    .controls button.secondary {
+      background: linear-gradient(135deg, #636e72, #2d3436);
+    }
+
+    .controls button:active {
+      transform: translateY(1px);
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.7);
+      filter: brightness(0.9);
+    }
+
+    .hint {
+      font-size: 0.78rem;
+      line-height: 1.4;
+      opacity: 0.8;
+      margin-top: 6px;
+    }
+
+    /* Scene / house */
+
+    .scene-wrapper {
+      position: relative;
+      border-radius: 18px;
+      background: radial-gradient(circle at top, #ffffff 0%, #dfe6e9 30%, #0984e3 70%);
+      padding: 10px;
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      box-shadow: inset 0 0 22px rgba(0, 0, 0, 0.22);
+    }
+
+    #scene {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 10;
+      background: linear-gradient(to bottom, #74b9ff 0%, #0984e3 40%, #dfe6e9 55%, #b2bec3 100%);
+      border-radius: 14px;
+      overflow: hidden;
+      cursor: crosshair;
+    }
+
+    /* Snow ground */
+    #scene::after {
+      content: "";
+      position: absolute;
+      left: -10%;
+      right: -10%;
+      bottom: -8%;
+      height: 40%;
+      background: radial-gradient(circle at top, #ffffff 0%, #ffffff 40%, #dfe6e9 70%, transparent 72%);
+    }
+
+    /* Snowfall overlay */
+    .snow-layer {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background-image:
+        radial-gradient(2px 2px at 10% 20%, rgba(255, 255, 255, 0.8) 50%, transparent 51%),
+        radial-gradient(2px 2px at 80% 10%, rgba(255, 255, 255, 0.7) 50%, transparent 51%),
+        radial-gradient(2px 2px at 30% 70%, rgba(255, 255, 255, 0.8) 50%, transparent 51%),
+        radial-gradient(2px 2px at 60% 40%, rgba(255, 255, 255, 0.8) 50%, transparent 51%),
+        radial-gradient(2px 2px at 50% 90%, rgba(255, 255, 255, 0.76) 50%, transparent 51%);
+      opacity: 0.7;
+      animation: snow-fall 18s linear infinite;
+    }
+
+    @keyframes snow-fall {
+      0% {
+        transform: translateY(-20%);
+      }
+      100% {
+        transform: translateY(20%);
+      }
+    }
+
+    /* House */
+    .house {
+      position: absolute;
+      bottom: 12%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 46%;
+      height: 50%;
+    }
+
+    .house-body {
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      height: 65%;
+      background: linear-gradient(145deg, #ffeaa7, #fab1a0);
+      border-radius: 8px;
+      box-shadow: 0 12px 20px rgba(0, 0, 0, 0.4);
+      border: 2px solid rgba(0, 0, 0, 0.18);
+    }
+
+    .roof {
+      position: absolute;
+      bottom: 65%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 120%;
+      height: 0;
+      border-left: 60% solid transparent;
+      border-right: 60% solid transparent;
+      border-bottom: 55% solid #d63031;
+      filter: drop-shadow(0 10px 6px rgba(0, 0, 0, 0.4));
+    }
+
+    .roof-snow {
+      position: absolute;
+      bottom: 63%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 125%;
+      height: 10%;
+      background: #ffffff;
+      border-radius: 999px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.25);
+    }
+
+    .chimney {
+      position: absolute;
+      bottom: 74%;
+      left: 62%;
+      width: 14%;
+      height: 20%;
+      background: #8e4b3a;
+      border-radius: 4px 4px 0 0;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.35);
+    }
+
+    .chimney-top {
+      position: absolute;
+      top: -18%;
+      left: -5%;
+      width: 110%;
+      height: 26%;
+      background: #5d3527;
+      border-radius: 6px;
+    }
+
+    .chimney-smoke {
+      position: absolute;
+      left: 70%;
+      bottom: 90%;
+      width: 70px;
+      height: 80px;
+      background:
+        radial-gradient(circle at 20% 80%, rgba(255, 255, 255, 0.8) 0, transparent 60%),
+        radial-gradient(circle at 60% 50%, rgba(255, 255, 255, 0.7) 0, transparent 60%),
+        radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.7) 0, transparent 60%);
+      opacity: 0.8;
+      animation: smoke 5s ease-in-out infinite;
+    }
+
+    @keyframes smoke {
+      0% {
+        transform: translate(-10px, 10px) scale(0.8);
+        opacity: 0;
+      }
+      30% {
+        opacity: 0.8;
+      }
+      100% {
+        transform: translate(-30px, -30px) scale(1.4);
+        opacity: 0;
+      }
+    }
+
+    .door {
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 18%;
+      height: 45%;
+      background: #6d4c41;
+      border-radius: 10px 10px 0 0;
+      box-shadow: inset 0 0 0 3px rgba(255, 255, 255, 0.3);
+    }
+
+    .door-handle {
+      position: absolute;
+      top: 50%;
+      left: 28%;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #f1c40f;
+    }
+
+    .window {
+      position: absolute;
+      width: 18%;
+      height: 30%;
+      top: 18%;
+      background: linear-gradient(135deg, #ffeaa7, #ffd86f);
+      border-radius: 8px;
+      box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.7);
+    }
+
+    .window.left {
+      left: 15%;
+    }
+
+    .window.right {
+      right: 15%;
+    }
+
+    .window::before,
+    .window::after {
+      content: "";
+      position: absolute;
+      background: rgba(255, 255, 255, 0.7);
+    }
+
+    .window::before {
+      width: 3px;
+      height: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .window::after {
+      width: 100%;
+      height: 3px;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+    /* Decorations that the player adds */
+
+    .decor {
+      position: absolute;
+      font-size: 2.2rem;
+      transform: translate(-50%, -50%);
+      cursor: pointer;
+      transition: transform 0.08s ease, filter 0.1s ease, box-shadow 0.1s ease;
+      pointer-events: auto;
+    }
+
+    .decor.selected {
+      filter: drop-shadow(0 0 8px #ffeaa7) brightness(1.2);
+      transform: translate(-50%, -50%) scale(1.1);
+    }
+
+    /* Slight size tweaks per type */
+    .decor-lights {
+      font-size: 2.4rem;
+    }
+
+    .decor-garland {
+      font-size: 2rem;
+    }
+
+    .decor-tree {
+      font-size: 2.6rem;
+    }
+
+    .decor-snowman {
+      font-size: 2.8rem;
+    }
+
+    .decor-gift {
+      font-size: 2.4rem;
+    }
+
+    .decor-star {
+      font-size: 2.5rem;
+    }
+
+    .status-line {
+      font-size: 0.78rem;
+      opacity: 0.8;
+      margin-top: 4px;
+    }
+
+    .status-line strong {
+      color: #ffeaa7;
+    }
+  </style>
+</head>
+<body>
+  <div class="game-wrapper">
+    <div class="sidebar">
+      <div class="title panel">
+        <h1>Christmas House Decorator 🏠🎄</h1>
+        <p>
+          Choose a decoration, then click on the scene to place it on or around
+          the house. Tap a decoration to select it, then remove it if you change
+          your mind.
+        </p>
+      </div>
+
+      <div class="panel">
+        <h2>Decorations</h2>
+        <div class="palette" id="palette">
+          <button class="palette-button" data-decor="lights" data-emoji="✨">
+            <span class="emoji">✨</span>
+            <span>String lights</span>
+          </button>
+          <button class="palette-button" data-decor="garland" data-emoji="🎀">
+            <span class="emoji">🎀</span>
+            <span>Garland / Ribbon</span>
+          </button>
+          <button class="palette-button" data-decor="tree" data-emoji="🎄">
+            <span class="emoji">🎄</span>
+            <span>Christmas tree</span>
+          </button>
+          <button class="palette-button" data-decor="snowman" data-emoji="⛄">
+            <span class="emoji">⛄</span>
+            <span>Snowman</span>
+          </button>
+          <button class="palette-button" data-decor="gift" data-emoji="🎁">
+            <span class="emoji">🎁</span>
+            <span>Gifts</span>
+          </button>
+          <button class="palette-button" data-decor="star" data-emoji="⭐">
+            <span class="emoji">⭐</span>
+            <span>Stars</span>
+          </button>
+        </div>
+
+        <div class="controls">
+          <button id="randomBtn">Random decorate 🎲</button>
+          <button id="clearBtn" class="secondary">Clear decorations ♻️</button>
+          <button id="removeSelectedBtn" class="secondary">Remove selected ❌</button>
+        </div>
+
+        <p class="hint">
+          💡 Tip: Try placing lights near the roof, gifts near the door, and stars in the sky!
+        </p>
+        <p class="status-line" id="statusLine">
+          Selected: <strong>none</strong> · Decorations placed: <strong>0</strong>
+        </p>
+      </div>
+    </div>
+
+    <div class="scene-wrapper">
+      <div id="scene">
+        <!-- static scene -->
+        <div class="snow-layer"></div>
+        <div class="house">
+          <div class="roof"></div>
+          <div class="roof-snow"></div>
+          <div class="chimney">
+            <div class="chimney-top"></div>
+          </div>
+          <div class="chimney-smoke"></div>
+          <div class="house-body">
+            <div class="window left"></div>
+            <div class="window right"></div>
+            <div class="door">
+              <div class="door-handle"></div>
+            </div>
+          </div>
+        </div>
+        <!-- decorations added by player will be inserted here -->
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      const scene = document.getElementById("scene");
+      const palette = document.getElementById("palette");
+      const statusLine = document.getElementById("statusLine");
+      const clearBtn = document.getElementById("clearBtn");
+      const randomBtn = document.getElementById("randomBtn");
+      const removeSelectedBtn = document.getElementById("removeSelectedBtn");
+
+      const paletteButtons = Array.from(
+        palette.querySelectorAll(".palette-button")
+      );
+
+      let currentDecorType = null;
+      let currentEmoji = null;
+      let decorations = [];
+      let selectedDecor = null;
+      let idCounter = 0;
+
+      function updateStatus() {
+        const selectedText = selectedDecor
+          ? selectedDecor.dataset.type
+          : "none";
+        statusLine.innerHTML =
+          'Selected: <strong>' +
+          selectedText +
+          "</strong> · Decorations placed: <strong>" +
+          decorations.length +
+          "</strong>";
+      }
+
+      function selectPaletteButton(button) {
+        paletteButtons.forEach((btn) => btn.classList.remove("active"));
+        if (button) {
+          button.classList.add("active");
+          currentDecorType = button.dataset.decor;
+          currentEmoji = button.dataset.emoji;
+        } else {
+          currentDecorType = null;
+          currentEmoji = null;
+        }
+      }
+
+      paletteButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+          if (button.classList.contains("active")) {
+            // deselect if clicking again
+            selectPaletteButton(null);
+          } else {
+            selectPaletteButton(button);
+          }
+          // do not change selectedDecor on palette clicks
+        });
+      });
+
+      function createDecorElement(type, emoji, x, y) {
+        const el = document.createElement("div");
+        el.className = "decor decor-" + type;
+        el.textContent = emoji;
+        el.style.left = x + "px";
+        el.style.top = y + "px";
+        el.dataset.type = type;
+        el.dataset.id = String(idCounter++);
+        el.addEventListener("click", (event) => {
+          // prevent scene click from firing
+          event.stopPropagation();
+          selectDecor(el);
+        });
+        scene.appendChild(el);
+        decorations.push(el);
+        updateStatus();
+        return el;
+      }
+
+      function selectDecor(el) {
+        if (selectedDecor === el) {
+          // toggle off
+          el.classList.remove("selected");
+          selectedDecor = null;
+        } else {
+          if (selectedDecor) {
+            selectedDecor.classList.remove("selected");
+          }
+          selectedDecor = el;
+          el.classList.add("selected");
+        }
+        updateStatus();
+      }
+
+      function clearDecorations() {
+        decorations.forEach((el) => {
+          if (el.parentNode === scene) {
+            scene.removeChild(el);
+          }
+        });
+        decorations = [];
+        selectedDecor = null;
+        updateStatus();
+      }
+
+      function removeSelected() {
+        if (!selectedDecor) return;
+        const id = selectedDecor.dataset.id;
+        decorations = decorations.filter((el) => el.dataset.id !== id);
+        if (selectedDecor.parentNode === scene) {
+          scene.removeChild(selectedDecor);
+        }
+        selectedDecor = null;
+        updateStatus();
+      }
+
+      function randomDecorate() {
+        // place a small set of random decorations (does not clear first)
+        const sceneRect = scene.getBoundingClientRect();
+
+        const randomConfigs = [
+          { type: "lights", emoji: "✨", count: 6 },
+          { type: "garland", emoji: "🎀", count: 4 },
+          { type: "tree", emoji: "🎄", count: 3 },
+          { type: "snowman", emoji: "⛄", count: 2 },
+          { type: "gift", emoji: "🎁", count: 4 },
+          { type: "star", emoji: "⭐", count: 4 },
+        ];
+
+        randomConfigs.forEach((config) => {
+          for (let i = 0; i < config.count; i++) {
+            // more likely near house center horizontally
+            const x =
+              sceneRect.width * (0.25 + Math.random() * 0.5) +
+              (Math.random() - 0.5) * 40;
+            // vertical preference: ground / roof
+            const type = config.type;
+            let y;
+            if (type === "tree" || type === "snowman" || type === "gift") {
+              // near ground
+              y = sceneRect.height * (0.62 + Math.random() * 0.15);
+            } else if (type === "lights" || type === "garland") {
+              // around top half of house
+              y = sceneRect.height * (0.36 + Math.random() * 0.12);
+            } else {
+              // stars: sky
+              y = sceneRect.height * (0.18 + Math.random() * 0.2);
+            }
+            createDecorElement(config.type, config.emoji, x, y);
+          }
+        });
+      }
+
+      scene.addEventListener("click", (event) => {
+        const rect = scene.getBoundingClientRect();
+        const x = event.clientX - rect.left;
+        const y = event.clientY - rect.top;
+
+        // clicking background: if we had a selected decor, deselect it
+        if (!currentDecorType || !currentEmoji) {
+          if (selectedDecor) {
+            selectedDecor.classList.remove("selected");
+            selectedDecor = null;
+            updateStatus();
+          }
+          return;
+        }
+
+        createDecorElement(currentDecorType, currentEmoji, x, y);
+      });
+
+      clearBtn.addEventListener("click", () => {
+        clearDecorations();
+      });
+
+      removeSelectedBtn.addEventListener("click", () => {
+        removeSelected();
+      });
+
+      randomBtn.addEventListener("click", () => {
+        randomDecorate();
+      });
+
+      // initial status
+      updateStatus();
+    })();
+  </script>
+</body>
+</html>
