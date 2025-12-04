@@ -16,11 +16,6 @@
 </head>
 <body>
   <div class="container">
-    <button id="musicToggle" class="music-btn">🎵 Play Christmas Music</button>
-
-<audio id="christmasMusic" loop>
-  <source src="christmas-jazz.mp3" type="audio/mpeg">
-</audio>
     <header class="header section">
       <h1 class="title">Homepage</h1>
       <p class="subtitle">Next upgrades coming soon...</p>
@@ -65,8 +60,30 @@ href="Flappy-Bird-main/index.html">Flappy Bird</a>
 <a href="christmas-memory.html">Christmas Memo Game 🎁 </a>
 <a class="card"
 <a href="christmas-decorator.html">Christmas Decoration Game 🏡 </a>
-
 </div>
+
+<div id="ytPlayer"></div>
+
+<script>
+  let player;
+  function onYouTubeIframeAPIReady() {
+    player = new YT.Player('ytPlayer', {
+      height: '0',
+      width: '0',
+      videoId: 'YOUR_VIDEO_ID',
+      playerVars: {
+        autoplay: 0, 
+        loop: 1,
+        playlist: 'YOUR_VIDEO_ID',  
+      },
+      events: {}
+    });
+  }
+</script>
+
+<script src="https://www.youtube.com/MKHtXovAejs"></script>
+
+      
       <div class="cstrEmbed" data-type="newStreamPlayer" data-publicToken="f237977a-2288-45c6-8561-55c387ac8361" data-theme="dark" data-color="000000" data-channelId="" data-rendered="false">
         
     </section>
