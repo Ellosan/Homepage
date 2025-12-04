@@ -191,31 +191,6 @@ body {
   }
 }
 
-.music-btn {
-  position: fixed;
-  top: 12px;
-  right: 12px;
-  z-index: 9999;
-  padding: 10px 18px;
-  font-size: 0.95rem;
-  color: #fff;
-  background: linear-gradient(135deg, #d63031, #e17055);
-  border: none;
-  border-radius: 999px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.35);
-  cursor: pointer;
-  transition: transform 0.1s ease, box-shadow 0.1s ease;
-}
-
-.music-btn:hover {
-  transform: scale(1.05);
-}
-
-.music-btn:active {
-  transform: scale(0.97);
-  box-shadow: 0 2px 6px rgba(0,0,0,0.45);
-}
-
 
 /* ----------------------------------
    4) Cards Grid (PC/Mobile Games)
