@@ -38,25 +38,3 @@
 
   items.forEach(el => io.observe(el));
 })();
-
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-  const btn = document.getElementById("musicToggle");
-  const music = document.getElementById("christmasMusic");
-  let isPlaying = false;
-
-  btn.addEventListener("click", () => {
-    if (!isPlaying) {
-      music.play().then(() => {
-        isPlaying = true;
-        btn.textContent = "⏸ Pause Christmas Music";
-      }).catch(err => {
-        console.log("Autoplay blocked:", err);
-      });
-    } else {
-      music.pause();
-      isPlaying = false;
-      btn.textContent = "🎵 Play Christmas Music";
-    }
-  });
-});
