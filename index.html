@@ -63,27 +63,78 @@ href="Flappy-Bird-main/index.html">Flappy Bird</a>
 </div>
 
 <h3 class="reveal candy-cane">CHRISTMAS MUSIC!</h3>
-<div id="ytPlayer"></div>
+<!-- Add somewhere in your <body>, e.g. inside or right after <header> -->
+<button id="musicToggle" class="music-btn">🎵 Play Music</button>
 
+<!-- Hidden container for YouTube API player -->
+<div id="ytPlayer" style="display: none;"></div>
+
+<!-- Add this CSS (in your <style> or external CSS) -->
+<style>
+  .music-btn {
+    position: fixed;
+    top: 12px;
+    right: 12px;
+    z-index: 9999;
+    padding: 8px 14px;
+    font-size: 0.95rem;
+    color: #fff;
+    background: linear-gradient(135deg, #d63031, #e17055);
+    border: none;
+    border-radius: 999px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.35);
+    cursor: pointer;
+    transition: transform 0.1s ease, box-shadow 0.1s ease;
+  }
+  .music-btn:hover {
+    transform: scale(1.05);
+  }
+  .music-btn:active {
+    transform: scale(0.97);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.45);
+  }
+</style>
+
+<!-- Then at the bottom, before </body> -->
+<script src="https://www.youtube.com/iframe_api"></script>
 <script>
-  let player;
+  let ytPlayer;
+
   function onYouTubeIframeAPIReady() {
-    player = new YT.Player('ytPlayer', {
+    ytPlayer = new YT.Player('ytPlayer', {
       height: '0',
       width: '0',
-      videoId: 'MKHtXovAejs',
+      videoId: 'MKHtXovAejs',  // ← from your YouTube link
       playerVars: {
-        autoplay: 0, 
+        autoplay: 0,
         loop: 1,
-        playlist: 'MKHtXovAejs',  
-      },
-      events: {}
+        playlist: 'MKHtXovAejs',
+        modestbranding: 1,
+        controls: 0,
+        disablekb: 1,
+        rel: 0,
+      }
     });
   }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    const btn = document.getElementById("musicToggle");
+    let isPlaying = false;
+
+    btn.addEventListener("click", () => {
+      if (!ytPlayer) return;
+      if (!isPlaying) {
+        ytPlayer.playVideo();
+        btn.textContent = "⏸ Pause Music";
+        isPlaying = true;
+      } else {
+        ytPlayer.pauseVideo();
+        btn.textContent = "🎵 Play Music";
+        isPlaying = false;
+      }
+    });
+  });
 </script>
-
-<script src="https://www.youtube.com/MKHtXovAejs"></script>
-
       
       <div class="cstrEmbed" data-type="newStreamPlayer" data-publicToken="f237977a-2288-45c6-8561-55c387ac8361" data-theme="dark" data-color="000000" data-channelId="" data-rendered="false">
         
