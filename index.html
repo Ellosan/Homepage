@@ -60,20 +60,15 @@ href="Flappy-Bird-main/index.html">Flappy Bird</a>
 <a href="christmas-memory.html">Christmas Memo Game 🎁 </a>
 <a class="card"
 <a href="christmas-decorator.html">Christmas Decoration Game 🏡 </a>
-</div>
-
-<h3 class="reveal candy-cane">CHRISTMAS MUSIC!</h3>
 <!-- 🎵 CHRISTMAS MUSIC CONTROLLER -->
 <div id="musicController" class="music-controller">
   <button id="musicToggle" class="music-btn">🎵</button>
   <input type="range" id="musicVolume" min="0" max="100" value="100">
 </div>
 
-<!-- Hidden YouTube Player -->
-<div id="ytPlayer" style="display:none;"></div>
+<div id="ytPlayer"></div>
 
 <style>
-  /* === MUSIC CONTROLLER STYLES === */
   .music-controller {
     position: fixed;
     top: 12px;
@@ -83,53 +78,41 @@ href="Flappy-Bird-main/index.html">Flappy Bird</a>
     align-items: center;
     gap: 10px;
     padding: 6px 12px;
-    background: rgba(255, 255, 255, 0.15);
+    background: rgba(255,255,255,0.15);
     backdrop-filter: blur(10px);
     border-radius: 999px;
-    border: 1px solid rgba(255, 255, 255, 0.25);
+    border: 1px solid rgba(255,255,255,0.25);
   }
-
   .music-btn {
     padding: 6px 10px;
     font-size: 1.1rem;
+    background: linear-gradient(135deg,#d63031,#e17055);
     color: #fff;
-    background: linear-gradient(135deg, #d63031, #e17055);
     border: none;
     border-radius: 50%;
     cursor: pointer;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.35);
-    transition: transform 0.1s ease;
   }
-
-  .music-btn:hover {
-    transform: scale(1.15);
-  }
-
   #musicVolume {
     width: 100px;
-    height: 6px;
-    cursor: pointer;
     accent-color: #d63031;
   }
 </style>
 
-<!-- YouTube API -->
-<script src="https://www.youtube.com/MKHtXovAejs"></script>
+<script src="https://www.youtube.com/iframe_api"></script>
 
 <script>
-  let ytPlayer;
+  let ytPlayer;       // must be global
   let isPlaying = false;
 
-  // YouTube player setup
   function onYouTubeIframeAPIReady() {
-    ytPlayer = new YT.Player("ytPlayer", {
-      height: "0",
-      width: "0",
-      videoId: "MKHtXovAejs", // Your Christmas music video
+    ytPlayer = new YT.Player('ytPlayer', {
+      height: '0',
+      width: '0',
+      videoId: 'MKHtXovAejs',
       playerVars: {
         autoplay: 0,
         loop: 1,
-        playlist: "MKHtXovAejs",
+        playlist: 'MKHtXovAejs',
         controls: 0,
         modestbranding: 1
       }
@@ -140,22 +123,23 @@ href="Flappy-Bird-main/index.html">Flappy Bird</a>
     const btn = document.getElementById("musicToggle");
     const vol = document.getElementById("musicVolume");
 
-    // Play / Pause toggle
     btn.addEventListener("click", () => {
-      if (!ytPlayer) return;
+      if (!ytPlayer || typeof ytPlayer.playVideo !== "function") {
+        console.warn("Player not ready yet!");
+        return;
+      }
 
       if (!isPlaying) {
         ytPlayer.playVideo();
-        btn.textContent = "⏸"; // Pause icon
+        btn.textContent = "⏸";
         isPlaying = true;
       } else {
         ytPlayer.pauseVideo();
-        btn.textContent = "🎵"; // Play icon
+        btn.textContent = "🎵";
         isPlaying = false;
       }
     });
 
-    // Volume slider
     vol.addEventListener("input", () => {
       if (ytPlayer && ytPlayer.setVolume) {
         ytPlayer.setVolume(vol.value);
@@ -164,6 +148,7 @@ href="Flappy-Bird-main/index.html">Flappy Bird</a>
   });
 </script>
 
+</div>
       
       <div class="cstrEmbed" data-type="newStreamPlayer" data-publicToken="f237977a-2288-45c6-8561-55c387ac8361" data-theme="dark" data-color="000000" data-channelId="" data-rendered="false">
         
