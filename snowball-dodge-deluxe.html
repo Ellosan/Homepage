@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Snowball Dodge Deluxe ❄️🎄</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top, #001f3f 0%, #001233 30%, #02101c 70%);
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+    }
+
+    #gameContainer {
+      width: 420px;
+      max-width: 100vw;
+      height: 700px;
+      max-height: 100vh;
+      border-radius: 22px;
+      background: linear-gradient(to bottom, #081028, #050816);
+      border: 2px solid rgba(255, 255, 255, 0.18);
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 20px 45px rgba(0, 0, 0, 0.7);
+    }
+
+    /* Snowy background */
+    #gameContainer::before,
+    #gameContainer::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background-image:
+        radial-gradient(2px 2px at 10% 20%, rgba(255,255,255,0.95) 50%, transparent 52%),
+        radial-gradient(2px 2px at 80% 15%, rgba(255,255,255,0.8) 50%, transparent 52%),
+        radial-gradient(2px 2px at 30% 70%, rgba(255,255,255,0.85) 50%, transparent 52%),
+        radial-gradient(2px 2px at 75% 65%, rgba(255,255,255,0.9) 50%, transparent 52%),
+        radial-gradient(2px 2px at 50% 95%, rgba(255,255,255,0.9) 50%, transparent 52%);
+      opacity: 0.8;
+      animation: snowDrift 16s linear infinite;
+    }
+
+    #gameContainer::after {
+      filter: blur(1px);
+      opacity: 0.6;
+      animation-duration: 22s;
+    }
+
+    @keyframes snowDrift {
+      0% {
+        transform: translateY(-10%);
+      }
+      100% {
+        transform: translateY(10%);
+      }
+    }
+
+    #playField {
+      position: absolute;
+      inset: 60px 0 70px 0;
+      overflow: hidden;
+      z-index: 0;
+    }
+
+    /* ground snow (polished hill) */
+    #playField::after {
+      content: "";
+      position: absolute;
+      left: -12%;
+      right: -12%;
+      bottom: -6%;
+      height: 36%;
+      pointer-events: none;
+      z-index: 0;
+      border-top-left-radius: 55% 60%;
+      border-top-right-radius: 55% 60%;
+      background:
+        radial-gradient(60% 40% at 50% 10%, rgba(255,255,255,1) 0%, rgba(250,250,251,1) 22%, rgba(242,244,245,0.95) 45%, rgba(223,228,234,0.9) 70%, transparent 72%),
+        radial-gradient(40% 24% at 20% 100%, rgba(255,255,255,1) 0%, rgba(255,255,255,0.6) 55%, transparent 60%),
+        linear-gradient(#ffffff, #f2f4f5 40%, #dfe4ea 70%);
+      box-shadow: inset 0 -18px 36px rgba(0,0,0,0.25), 0 -6px 30px rgba(0,0,0,0.25);
+      transform: translateY(4%);
+      background-size: cover;
+    }
+
+    #topHUD {
+      position: absolute;
+      top: 6px;
+      left: 8px;
+      right: 8px;
+      height: 52px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 4px;
+      padding: 4px 8px;
+      font-size: 0.8rem;
+    }
+
+    .hud-box {
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.15);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      white-space: nowrap;
+    }
+
+    .hud-label {
+      opacity: 0.8;
+    }
+
+    #livesDisplay {
+      font-size: 1.1rem;
+    }
+
+    #effectDisplay {
+      min-width: 70px;
+    }
+
+    #characterSelect {
+      position: absolute;
+      top: 6px;
+      right: 10px;
+      display: flex;
+      gap: 4px;
+    }
+
+    .char-btn {
+      border-radius: 50%;
+      width: 28px;
+      height: 28px;
+      border: 1px solid rgba(255,255,255,0.4);
+      background: rgba(0,0,0,0.25);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 1.2rem;
+      transition: transform 0.08s ease, box-shadow 0.08s ease, background 0.1s ease;
+    }
+
+    .char-btn.active {
+      background: radial-gradient(circle at top, #ffeaa7, #fab1a0);
+      box-shadow: 0 0 10px rgba(255,255,255,0.5);
+    }
+
+    .char-btn:active {
+      transform: scale(0.9);
+    }
+
+    #player {
+      position: absolute;
+      bottom: 10px;
+      left: 50%;
+      width: 52px;
+      height: 52px;
+      font-size: 40px;
+      transform: translateX(-50%);
+      text-align: center;
+      line-height: 52px;
+      user-select: none;
+      pointer-events: none;
+      transition: transform 0.05s ease;
+      z-index: 3;
+    }
+
+    .entity {
+      position: absolute;
+      width: 44px;
+      height: 44px;
+      font-size: 38px;
+      text-align: center;
+      line-height: 44px;
+      user-select: none;
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    .snowball {
+      text-shadow: 0 0 8px rgba(255,255,255,0.7);
+    }
+
+    .gift {
+      text-shadow: 0 0 10px rgba(255,215,0,0.8);
+    }
+
+    .powerup {
+      text-shadow: 0 0 10px rgba(46,204,113,0.9);
+    }
+
+    #controls {
+      position: absolute;
+      bottom: 8px;
+      left: 0;
+      right: 0;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      padding: 0 8px;
+      z-index: 6;
+    }
+
+    .ctrlBtn {
+      padding: 10px 18px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.2);
+      background: rgba(255,255,255,0.12);
+      color: #fff;
+      font-size: 1.3rem;
+      cursor: pointer;
+      touch-action: manipulation;
+      min-width: 80px;
+    }
+
+    .ctrlBtn:active {
+      background: rgba(255,255,255,0.3);
+    }
+
+    /* Larger, touch-friendly controls on small screens */
+    @media (max-width: 520px) {
+      #controls { padding: 8px; }
+      .ctrlBtn {
+        min-width: 120px;
+        padding: 14px 20px;
+        font-size: 1.6rem;
+        border-radius: 16px;
+      }
+    }
+
+    #gameOverScreen {
+      position: absolute;
+      inset: 60px 0 0 0;
+      background: radial-gradient(circle at center, rgba(0,0,0,0.9), rgba(0,0,0,0.96));
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 20px;
+      gap: 10px;
+      z-index: 5;
+    }
+
+    #gameOverScreen h1 {
+      font-size: 1.5rem;
+      margin-bottom: 6px;
+    }
+
+    #gameOverScreen p {
+      font-size: 0.95rem;
+      opacity: 0.9;
+    }
+
+    #restartBtn {
+      margin-top: 10px;
+      padding: 10px 18px;
+      border: none;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #ff7675, #e84393);
+      color: #fff;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.6);
+    }
+
+    #restartBtn:active {
+      transform: translateY(1px);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.7);
+    }
+
+    .small {
+      font-size: 0.8rem;
+      opacity: 0.8;
+    }
+  </style>
+</head>
+<body>
+  <div id="gameContainer">
+    <div id="topHUD">
+      <div class="hud-box">
+        <span class="hud-label">Score:</span>
+        <span id="scoreDisplay">0</span>
+      </div>
+      <div class="hud-box">
+        <span class="hud-label">Best:</span>
+        <span id="bestDisplay">0</span>
+      </div>
+      <div class="hud-box">
+        <span class="hud-label">Lives:</span>
+        <span id="livesDisplay">❤️❤️❤️</span>
+      </div>
+      <div class="hud-box">
+        <span class="hud-label">Effect:</span>
+        <span id="effectDisplay">–</span>
+      </div>
+    </div>
+
+    <div id="characterSelect">
+      <button class="char-btn active" data-char="🎅" title="Santa">🎅</button>
+      <button class="char-btn" data-char="🧑‍🎄" title="Helper">🧑‍🎄</button>
+      <button class="char-btn" data-char="🦌" title="Reindeer">🦌</button>
+      <button class="char-btn" data-char="⛄" title="Snowman">⛄</button>
+    </div>
+
+    <div id="playField">
+      <div id="player">🎅</div>
+      <!-- Entities are injected here -->
+      <div id="gameOverScreen">
+        <h1>❄️ Game Over! ❄️</h1>
+        <p>Your score: <strong><span id="finalScore">0</span></strong></p>
+        <p>Best: <strong><span id="finalBest">0</span></strong></p>
+        <p class="small">Avoid ❄ snowballs, catch 🎁 gifts, and grab power-ups ⭐ 🛡 ⌛</p>
+        <button id="restartBtn">Play Again</button>
+      </div>
+    </div>
+
+    <div id="controls">
+      <button id="leftBtn" class="ctrlBtn">⬅️</button>
+      <button id="rightBtn" class="ctrlBtn">➡️</button>
+    </div>
+  </div>
+
+  <script>
+    const playField = document.getElementById("playField");
+    const playerEl = document.getElementById("player");
+    const scoreDisplay = document.getElementById("scoreDisplay");
+    const bestDisplay = document.getElementById("bestDisplay");
+    const livesDisplay = document.getElementById("livesDisplay");
+    const effectDisplay = document.getElementById("effectDisplay");
+    const gameOverScreen = document.getElementById("gameOverScreen");
+    const finalScoreEl = document.getElementById("finalScore");
+    const finalBestEl = document.getElementById("finalBest");
+    const restartBtn = document.getElementById("restartBtn");
+    const leftBtn = document.getElementById("leftBtn");
+    const rightBtn = document.getElementById("rightBtn");
+    const charButtons = Array.from(document.querySelectorAll(".char-btn"));
+
+    let bestScore = 0;
+
+    // Load best score from localStorage
+    try {
+      const stored = localStorage.getItem("snowballDodgeBest");
+      if (stored) {
+        bestScore = parseInt(stored, 10) || 0;
+        bestDisplay.textContent = bestScore;
+      }
+    } catch (e) {}
+
+    let playerX = 0;
+    const playerWidth = 52;
+    let fieldWidth = 0;
+    let score = 0;
+    let lives = 3;
+    let gameOver = false;
+
+    let entities = []; // {el, x, y, vy, type, subtype}
+    let lastTimestamp = 0;
+    let spawnSnowballTimer = 0;
+    let spawnGiftTimer = 0;
+    let spawnPowerTimer = 0;
+    let difficultyTimer = 0;
+
+    let baseSnowballSpeed = 120; // px/s
+    let speedMultiplier = 1;
+    let snowballSpawnInterval = 900; // ms
+    let giftSpawnInterval = 4500;
+    let powerSpawnInterval = 7000;
+
+    let shieldActive = false;
+    let shieldTimeLeft = 0; // seconds
+    let slowActive = false;
+    let slowTimeLeft = 0;
+
+    const POWER_TYPES = ["shield", "slow", "life"];
+
+    function resetGame() {
+      // remove existing entities
+      entities.forEach(e => {
+        if (e.el && e.el.parentNode === playField) {
+          playField.removeChild(e.el);
+        }
+      });
+      entities = [];
+      score = 0;
+      lives = 3;
+      gameOver = false;
+      baseSnowballSpeed = 120;
+      speedMultiplier = 1;
+      snowballSpawnInterval = 900;
+      giftSpawnInterval = 4500;
+      powerSpawnInterval = 7000;
+      spawnSnowballTimer = 0;
+      spawnGiftTimer = 0;
+      spawnPowerTimer = 0;
+      difficultyTimer = 0;
+      shieldActive = false;
+      shieldTimeLeft = 0;
+      slowActive = false;
+      slowTimeLeft = 0;
+      effectDisplay.textContent = "–";
+      updateHUD();
+      gameOverScreen.style.display = "none";
+
+      fieldWidth = playField.clientWidth;
+      playerX = fieldWidth / 2;
+      updatePlayerPosition();
+      lastTimestamp = performance.now();
+      requestAnimationFrame(gameLoop);
+    }
+
+    function updateHUD() {
+      scoreDisplay.textContent = score;
+      livesDisplay.textContent = "❤️".repeat(lives) || "💀";
+      if (shieldActive) {
+        effectDisplay.textContent = "🛡 Shield";
+      } else if (slowActive) {
+        effectDisplay.textContent = "⌛ Slow";
+      } else {
+        effectDisplay.textContent = "–";
+      }
+    }
+
+    function updatePlayerPosition() {
+      const clamped = Math.max(playerWidth / 2, Math.min(fieldWidth - playerWidth / 2, playerX));
+      playerX = clamped;
+      playerEl.style.left = playerX + "px";
+    }
+
+    function spawnEntity(type, subtype) {
+      const el = document.createElement("div");
+      el.classList.add("entity");
+      let emoji = "❄️";
+      if (type === "snowball") {
+        el.classList.add("snowball");
+        emoji = "❄️";
+      } else if (type === "gift") {
+        el.classList.add("gift");
+        emoji = "🎁";
+      } else if (type === "powerup") {
+        el.classList.add("powerup");
+        if (subtype === "shield") emoji = "🛡️";
+        if (subtype === "slow") emoji = "⌛";
+        if (subtype === "life") emoji = "⭐";
+      }
+      el.textContent = emoji;
+      const x = Math.random() * (fieldWidth - 44) + 22;
+      const y = -40;
+      el.style.left = x + "px";
+      el.style.top = y + "px";
+      playField.appendChild(el);
+
+      let vy = baseSnowballSpeed;
+      if (type === "gift") vy *= 0.85;
+      if (type === "powerup") vy *= 0.75;
+      entities.push({ el, x, y, vy, type, subtype });
+    }
+
+    function applyPowerup(subtype) {
+      if (subtype === "shield") {
+        shieldActive = true;
+        shieldTimeLeft = 6;
+      } else if (subtype === "slow") {
+        slowActive = true;
+        slowTimeLeft = 5;
+      } else if (subtype === "life") {
+        lives = Math.min(lives + 1, 5);
+      }
+    }
+
+    function handleHitBySnowball(entityIndex) {
+      const e = entities[entityIndex];
+      if (!e) return;
+      // Remove snowball
+      if (e.el && e.el.parentNode === playField) {
+        playField.removeChild(e.el);
+      }
+      entities.splice(entityIndex, 1);
+
+      if (shieldActive) {
+        shieldActive = false;
+        shieldTimeLeft = 0;
+        effectDisplay.textContent = "–";
+        return;
+      }
+
+      lives -= 1;
+      playerEl.style.transform = "translateX(-50%) scale(0.9)";
+      setTimeout(() => {
+        playerEl.style.transform = "translateX(-50%)";
+      }, 100);
+
+      if (lives <= 0) {
+        endGame();
+      }
+    }
+
+    function endGame() {
+      if (gameOver) return;
+      gameOver = true;
+      finalScoreEl.textContent = score;
+      if (score > bestScore) {
+        bestScore = score;
+        bestDisplay.textContent = bestScore;
+        try {
+          localStorage.setItem("snowballDodgeBest", String(bestScore));
+        } catch (e) {}
+      }
+      finalBestEl.textContent = bestScore;
+      gameOverScreen.style.display = "flex";
+    }
+
+    function gameLoop(timestamp) {
+      if (gameOver) return;
+
+      const dt = (timestamp - lastTimestamp) / 1000;
+      lastTimestamp = timestamp;
+
+      // Handle continuous pointer/touch movement
+      if (moveLeftActive) {
+        playerX -= playerMoveSpeed * dt;
+        updatePlayerPosition();
+      }
+      if (moveRightActive) {
+        playerX += playerMoveSpeed * dt;
+        updatePlayerPosition();
+      }
+
+      spawnSnowballTimer += dt * 1000;
+      spawnGiftTimer += dt * 1000;
+      spawnPowerTimer += dt * 1000;
+      difficultyTimer += dt;
+
+      // Difficulty ramps up over time
+      if (difficultyTimer > 5) {
+        difficultyTimer = 0;
+        baseSnowballSpeed = Math.min(baseSnowballSpeed + 12, 260);
+        snowballSpawnInterval = Math.max(350, snowballSpawnInterval - 50);
+      }
+
+      // Effects timers
+      if (shieldActive) {
+        shieldTimeLeft -= dt;
+        if (shieldTimeLeft <= 0) {
+          shieldActive = false;
+        }
+      }
+      if (slowActive) {
+        slowTimeLeft -= dt;
+        if (slowTimeLeft <= 0) {
+          slowActive = false;
+        }
+      }
+
+      // Spawn snowballs
+      if (spawnSnowballTimer >= snowballSpawnInterval) {
+        spawnSnowballTimer = 0;
+        spawnEntity("snowball");
+      }
+
+      // Spawn gifts occasionally
+      if (spawnGiftTimer >= giftSpawnInterval) {
+        spawnGiftTimer = 0;
+        spawnEntity("gift");
+      }
+
+      // Spawn powerups
+      if (spawnPowerTimer >= powerSpawnInterval) {
+        spawnPowerTimer = 0;
+        const type = POWER_TYPES[Math.floor(Math.random() * POWER_TYPES.length)];
+        spawnEntity("powerup", type);
+      }
+
+      // Move entities & handle collisions
+      const playerRect = playerEl.getBoundingClientRect();
+      const fieldRect = playField.getBoundingClientRect();
+
+      for (let i = entities.length - 1; i >= 0; i--) {
+        const e = entities[i];
+        const slowFactor = slowActive ? 0.6 : 1;
+        e.y += e.vy * slowFactor * dt;
+        e.el.style.top = e.y + "px";
+
+        // Off-screen bottom
+        if (e.y > playField.clientHeight + 60) {
+          // reward small score for successfully dodged snowball
+          if (e.type === "snowball") {
+            score += 1;
+          }
+          // remove entity
+          if (e.el.parentNode === playField) {
+            playField.removeChild(e.el);
+          }
+          entities.splice(i, 1);
+          continue;
+        }
+
+        // collision with player
+        const entityRect = e.el.getBoundingClientRect();
+        const overlap =
+          !(entityRect.right < playerRect.left ||
+            entityRect.left > playerRect.right ||
+            entityRect.bottom < playerRect.top ||
+            entityRect.top > playerRect.bottom);
+
+        if (overlap) {
+          if (e.type === "snowball") {
+            handleHitBySnowball(i);
+          } else if (e.type === "gift") {
+            score += 5;
+            if (e.el.parentNode === playField) {
+              playField.removeChild(e.el);
+            }
+            entities.splice(i, 1);
+          } else if (e.type === "powerup") {
+            applyPowerup(e.subtype);
+            if (e.el.parentNode === playField) {
+              playField.removeChild(e.el);
+            }
+            entities.splice(i, 1);
+          }
+        }
+      }
+
+      updateHUD();
+      requestAnimationFrame(gameLoop);
+    }
+
+    // Controls
+    function movePlayer(dx) {
+      playerX += dx;
+      updatePlayerPosition();
+    }
+
+    // Continuous movement flags for touch / pointer controls
+    let moveLeftActive = false;
+    let moveRightActive = false;
+    const playerMoveSpeed = 420; // px per second when holding
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "ArrowLeft" || e.key === "a" || e.key === "A") {
+        movePlayer(-26);
+      } else if (e.key === "ArrowRight" || e.key === "d" || e.key === "D") {
+        movePlayer(26);
+      } else if (e.key === " " && gameOver) {
+        resetGame();
+      }
+    });
+
+    leftBtn.addEventListener("click", () => movePlayer(-26));
+    rightBtn.addEventListener("click", () => movePlayer(26));
+
+    // Pointer/touch support for holding the buttons
+    function bindHoldButton(btn, setActive) {
+      btn.addEventListener('pointerdown', (e) => {
+        e.preventDefault();
+        setActive(true);
+        try { btn.setPointerCapture && btn.setPointerCapture(e.pointerId); } catch (er) {}
+      });
+      ['pointerup','pointercancel','pointerleave'].forEach(ev => {
+        btn.addEventListener(ev, () => setActive(false));
+      });
+    }
+
+    bindHoldButton(leftBtn, (v) => moveLeftActive = v);
+    bindHoldButton(rightBtn, (v) => moveRightActive = v);
+
+    // Allow tapping/holding the play field edges to move as well (mobile)
+    playField.addEventListener('pointerdown', (e) => {
+      if (e.pointerType !== 'touch') return;
+      const rect = playField.getBoundingClientRect();
+      if (e.clientX < rect.left + rect.width / 2) {
+        moveLeftActive = true;
+      } else {
+        moveRightActive = true;
+      }
+      const onUp = () => { moveLeftActive = moveRightActive = false; window.removeEventListener('pointerup', onUp); };
+      window.addEventListener('pointerup', onUp);
+    });
+
+    restartBtn.addEventListener("click", resetGame);
+
+    // Character selector
+    charButtons.forEach(btn => {
+      btn.addEventListener("click", () => {
+        charButtons.forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        const char = btn.dataset.char || "🎅";
+        playerEl.textContent = char;
+      });
+    });
+
+    // Initial layout setup and game start
+    // Use the central reset routine so all timers and HUD state initialize correctly.
+    window.addEventListener("load", resetGame);
+
+    // Ensure layout stays correct on resize
+    window.addEventListener("resize", () => {
+      const previousWidth = fieldWidth || playField.clientWidth;
+      fieldWidth = playField.clientWidth;
+      const ratio = fieldWidth / previousWidth;
+      playerX *= ratio;
+      updatePlayerPosition();
+    });
+  </script>
+</body>
+</html>
