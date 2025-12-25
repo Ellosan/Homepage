@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Christmas Tick-Tac-Toe 🎄</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0b2a18" />
+  <style>
+    :root{
+      --bg1:#071326;
+      --bg2:#0b2a18;
+      --panel: rgba(255,255,255,0.08);
+      --panel2: rgba(0,0,0,0.35);
+      --border: rgba(255,255,255,0.18);
+      --text: #ffffff;
+      --muted: rgba(255,255,255,0.78);
+      --good: #00b894;
+      --bad: #d63031;
+      --gold:#f1c40f;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color-scheme: dark;
+    }
+
+    *{ box-sizing:border-box; margin:0; padding:0; }
+
+    body{
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background: radial-gradient(circle at top, #1b4f9c 0%, var(--bg1) 45%, #020611 100%);
+      color: var(--text);
+      overflow:hidden;
+    }
+
+    /* Snow */
+    .snow{
+      position:fixed;
+      inset:-20vh 0 0 0;
+      pointer-events:none;
+      background-image:
+        radial-gradient(2px 2px at 10% 10%, rgba(255,255,255,0.95) 50%, transparent 52%),
+        radial-gradient(2px 2px at 30% 25%, rgba(255,255,255,0.80) 50%, transparent 52%),
+        radial-gradient(2px 2px at 70% 12%, rgba(255,255,255,0.85) 50%, transparent 52%),
+        radial-gradient(2px 2px at 85% 40%, rgba(255,255,255,0.70) 50%, transparent 52%),
+        radial-gradient(2px 2px at 55% 55%, rgba(255,255,255,0.90) 50%, transparent 52%),
+        radial-gradient(2px 2px at 20% 70%, rgba(255,255,255,0.80) 50%, transparent 52%),
+        radial-gradient(2px 2px at 90% 75%, rgba(255,255,255,0.90) 50%, transparent 52%);
+      opacity:0.75;
+      animation: snowfall 18s linear infinite;
+    }
+    .snow.s2{ opacity:0.45; filter: blur(1px); animation-duration: 26s; }
+    @keyframes snowfall{
+      0%{ transform: translateY(-10vh); }
+      100%{ transform: translateY(18vh); }
+    }
+
+    .app{
+      width:min(92vw, 520px);
+      border-radius:22px;
+      background: linear-gradient(180deg, rgba(0,0,0,0.25), rgba(0,0,0,0.55));
+      border: 1px solid var(--border);
+      box-shadow: 0 20px 50px rgba(0,0,0,0.65);
+      backdrop-filter: blur(10px);
+      padding: 14px;
+      position:relative;
+    }
+
+    header{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .title h1{
+      font-size: 1.25rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+    .title p{
+      font-size: 0.88rem;
+      color: var(--muted);
+      line-height: 1.25;
+    }
+
+    .rightTools{
+      display:flex;
+      align-items:center;
+      gap: 8px;
+    }
+
+    .pill{
+      display:flex;
+      align-items:center;
+      gap: 8px;
+      padding: 8px 10px;
+      border-radius: 999px;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      user-select:none;
+      white-space:nowrap;
+    }
+
+    /* Volume button */
+    .volBtn{
+      width: 42px;
+      height: 42px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: linear-gradient(135deg, rgba(214,48,49,0.95), rgba(0,184,148,0.95));
+      box-shadow: 0 10px 18px rgba(0,0,0,0.45);
+      cursor:pointer;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size: 1.2rem;
+      -webkit-touch-callout:none;
+      -webkit-user-select:none;
+      user-select:none;
+      touch-action: manipulation;
+    }
+    .volBtn:active{ transform: translateY(1px); }
+
+    .toggle{
+      display:flex;
+      align-items:center;
+      gap: 8px;
+      font-size:0.9rem;
+    }
+
+    .toggle input{
+      width: 42px; height: 22px;
+      appearance:none;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.15);
+      border: 1px solid var(--border);
+      position: relative;
+      cursor:pointer;
+      outline:none;
+    }
+    .toggle input::after{
+      content:"";
+      position:absolute;
+      top: 50%;
+      left: 3px;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      transform: translateY(-50%);
+      background: rgba(255,255,255,0.85);
+      transition: left 0.15s ease;
+    }
+    .toggle input:checked{
+      background: rgba(0,184,148,0.25);
+    }
+    .toggle input:checked::after{ left: 22px; }
+
+    .hud{
+      display:grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 8px;
+      margin: 10px 0 12px 0;
+    }
+    .hud .card{
+      padding: 10px 10px;
+      border-radius: 16px;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      text-align:center;
+    }
+    .hud .card .label{
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+    .hud .card .val{
+      font-size: 1.05rem;
+      font-weight: 700;
+    }
+
+    .boardWrap{
+      background: var(--panel2);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 12px;
+      position:relative;
+      overflow:hidden;
+    }
+
+    .board{
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      width: 100%;
+      aspect-ratio: 1 / 1;
+    }
+
+    .cell{
+      border-radius: 16px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.16);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size: 2.2rem;
+      cursor:pointer;
+      user-select:none;
+      transition: transform 0.08s ease, background 0.1s ease;
+      min-height: 92px;
+    }
+    .cell:active{
+      transform: scale(0.98);
+      background: rgba(255,255,255,0.10);
+    }
+    .cell.win{
+      outline: 2px solid rgba(241,196,15,0.95);
+      box-shadow: 0 0 18px rgba(241,196,15,0.55);
+    }
+
+    .bottomBar{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .btn{
+      border:none;
+      border-radius: 999px;
+      padding: 10px 14px;
+      font-weight: 700;
+      cursor:pointer;
+      color: white;
+      background: linear-gradient(135deg, #d63031, #e17055);
+      box-shadow: 0 10px 18px rgba(0,0,0,0.45);
+    }
+    .btn.secondary{
+      background: linear-gradient(135deg, #636e72, #2d3436);
+    }
+    .btn:active{ transform: translateY(1px); }
+
+    .turn{
+      font-size: 0.95rem;
+      color: var(--muted);
+      padding: 8px 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid var(--border);
+      white-space:nowrap;
+    }
+
+    /* Overlay */
+    .overlay{
+      position:absolute;
+      inset:0;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background: rgba(0,0,0,0.68);
+      border-radius: 22px;
+      padding: 16px;
+      text-align:center;
+      z-index: 50;
+    }
+    .overlay.hidden{ display:none; }
+
+    .overlayCard{
+      width:min(92%, 380px);
+      border-radius: 18px;
+      background: rgba(10, 12, 20, 0.88);
+      border: 1px solid rgba(255,255,255,0.18);
+      padding: 16px;
+      box-shadow: 0 20px 45px rgba(0,0,0,0.7);
+    }
+    .overlayCard h2{
+      font-size: 1.25rem;
+      margin-bottom: 6px;
+    }
+    .overlayCard p{
+      color: var(--muted);
+      margin-bottom: 12px;
+      line-height: 1.35;
+    }
+
+    /* Secret button */
+    .secretBtn{
+      position: fixed;
+      bottom: 18px;
+      right: 18px;
+      z-index: 9999;
+      padding: 12px 16px;
+      border-radius: 999px;
+      font-weight: 800;
+      text-decoration:none;
+      background: linear-gradient(135deg, #d63031, #00b894);
+      color: white;
+      border: 1px solid rgba(255,255,255,0.25);
+      box-shadow: 0 10px 22px rgba(0,0,0,0.4);
+      display:none;
+      -webkit-touch-callout:none;
+      -webkit-user-select:none;
+      user-select:none;
+      touch-action: manipulation;
+    }
+    .secretBtn.show{ display:inline-block; }
+
+    /* Confetti-ish sparkle */
+    .sparkle{
+      position:absolute;
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: white;
+      opacity: 0.9;
+      pointer-events:none;
+      animation: sparkle 900ms ease-out forwards;
+    }
+    @keyframes sparkle{
+      0%{ transform: translate(0,0) scale(1); opacity: 1; }
+      100%{ transform: translate(var(--dx), var(--dy)) scale(0.2); opacity: 0; }
+    }
+
+    @media (max-width: 380px){
+      .cell{ min-height: 78px; font-size: 2.0rem; }
+      .title p{ font-size: 0.82rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="snow"></div>
+  <div class="snow s2"></div>
+
+  <!-- Secret button revealed by long-pressing the volume button -->
+  <a id="secretLink" class="secretBtn" href="../index.html" aria-hidden="true">🎁 Secret!</a>
+
+  <div class="app" id="app">
+    <header>
+      <div class="title">
+        <h1>Christmas Tick-Tac-Toe</h1>
+        <p>Santa 🎅 vs Reindeer 🦌 — play with a friend. Long-press 🔊 for a surprise.</p>
+      </div>
+
+      <div class="rightTools">
+        <button id="volBtn" class="volBtn" aria-label="volume">🔇</button>
+        <div class="pill toggle" title="Holiday Mode adds extra sparkle and snow">
+          <span>🎄</span>
+          <input id="holidayMode" type="checkbox" checked />
+        </div>
+      </div>
+    </header>
+
+    <section class="hud">
+      <div class="card">
+        <div class="label">Santa wins</div>
+        <div class="val" id="scoreX">0</div>
+      </div>
+      <div class="card">
+        <div class="label">Draws</div>
+        <div class="val" id="scoreD">0</div>
+      </div>
+      <div class="card">
+        <div class="label">Reindeer wins</div>
+        <div class="val" id="scoreO">0</div>
+      </div>
+    </section>
+
+    <div class="boardWrap">
+      <div class="board" id="board" aria-label="tic tac toe board">
+        <button class="cell" data-i="0" aria-label="cell 1"></button>
+        <button class="cell" data-i="1" aria-label="cell 2"></button>
+        <button class="cell" data-i="2" aria-label="cell 3"></button>
+        <button class="cell" data-i="3" aria-label="cell 4"></button>
+        <button class="cell" data-i="4" aria-label="cell 5"></button>
+        <button class="cell" data-i="5" aria-label="cell 6"></button>
+        <button class="cell" data-i="6" aria-label="cell 7"></button>
+        <button class="cell" data-i="7" aria-label="cell 8"></button>
+        <button class="cell" data-i="8" aria-label="cell 9"></button>
+      </div>
+    </div>
+
+    <div class="bottomBar">
+      <div class="turn" id="turnText">Press Start</div>
+      <div style="display:flex; gap:8px;">
+        <button class="btn secondary" id="resetScoresBtn">Reset Scores</button>
+        <button class="btn" id="restartBtn">Restart</button>
+      </div>
+    </div>
+
+    <!-- Start overlay -->
+    <div class="overlay" id="startOverlay">
+      <div class="overlayCard">
+        <h2>Start 🎄</h2>
+        <p>(Warning: music can play) Tap start, then play on the 3×3 board.</p>
+        <button class="btn" id="startBtn">Start Game</button>
+      </div>
+    </div>
+
+    <!-- End overlay -->
+    <div class="overlay hidden" id="endOverlay">
+      <div class="overlayCard">
+        <h2 id="endTitle">Winner!</h2>
+        <p id="endMsg">Nice!</p>
+        <button class="btn" id="playAgainBtn">Play again</button>
+      </div>
+    </div>
+
+    <!-- Audio (local file recommended). Replace src if you want. -->
+    <audio id="bgMusic" loop preload="auto">
+      <!-- Put an mp3 in your repo and set the path, e.g. ./music/jingle.mp3 -->
+      <source src="./images/happy.mp3" type="audio/mpeg">
+    </audio>
+  </div>
+
+<script>
+(() => {
+  const boardEl = document.getElementById("board");
+  const cells = Array.from(document.querySelectorAll(".cell"));
+  const startOverlay = document.getElementById("startOverlay");
+  const endOverlay = document.getElementById("endOverlay");
+  const startBtn = document.getElementById("startBtn");
+  const playAgainBtn = document.getElementById("playAgainBtn");
+  const restartBtn = document.getElementById("restartBtn");
+  const resetScoresBtn = document.getElementById("resetScoresBtn");
+  const turnText = document.getElementById("turnText");
+  const endTitle = document.getElementById("endTitle");
+  const endMsg = document.getElementById("endMsg");
+
+  const scoreXEl = document.getElementById("scoreX");
+  const scoreOEl = document.getElementById("scoreO");
+  const scoreDEl = document.getElementById("scoreD");
+
+  const volBtn = document.getElementById("volBtn");
+  const music = document.getElementById("bgMusic");
+
+  const holidayMode = document.getElementById("holidayMode");
+
+  const secretLink = document.getElementById("secretLink");
+
+  const X = "🎅";
+  const O = "🦌";
+
+  const wins = [
+    [0,1,2],[3,4,5],[6,7,8],
+    [0,3,6],[1,4,7],[2,5,8],
+    [0,4,8],[2,4,6]
+  ];
+
+  let board = Array(9).fill(null);
+  let current = X;
+  let active = false;
+
+  // Scores (persist)
+  let scores = { x:0, o:0, d:0 };
+  try {
+    const raw = localStorage.getItem("xmasTTT_scores");
+    if (raw) scores = Object.assign(scores, JSON.parse(raw));
+  } catch (e) {}
+
+  function saveScores(){
+    try { localStorage.setItem("xmasTTT_scores", JSON.stringify(scores)); } catch(e) {}
+  }
+
+  function renderScores(){
+    scoreXEl.textContent = scores.x;
+    scoreOEl.textContent = scores.o;
+    scoreDEl.textContent = scores.d;
+  }
+
+  renderScores();
+
+  function setTurn(){
+    turnText.textContent = current === X ? "Santa’s turn 🎅" : "Reindeer’s turn 🦌";
+  }
+
+  function clearWinMarks(){
+    cells.forEach(c => c.classList.remove("win"));
+  }
+
+  function resetBoard(){
+    board = Array(9).fill(null);
+    cells.forEach(c => c.textContent = "");
+    clearWinMarks();
+    current = X;
+    setTurn();
+  }
+
+  function checkWinner(){
+    for (const line of wins){
+      const [a,b,c] = line;
+      if (board[a] && board[a] === board[b] && board[a] === board[c]){
+        return { winner: board[a], line };
+      }
+    }
+    if (board.every(Boolean)) return { winner: "draw" };
+    return null;
+  }
+
+  function sparkleBurst(centerEl){
+    if (!holidayMode.checked) return;
+    const rect = centerEl.getBoundingClientRect();
+    const host = document.body;
+
+    for (let i=0; i<28; i++){
+      const s = document.createElement("div");
+      s.className = "sparkle";
+      const x = rect.left + rect.width/2;
+      const y = rect.top + rect.height/2;
+      s.style.left = x + "px";
+      s.style.top = y + "px";
+      const dx = (Math.random()*240 - 120).toFixed(1) + "px";
+      const dy = (Math.random()*240 - 120).toFixed(1) + "px";
+      s.style.setProperty("--dx", dx);
+      s.style.setProperty("--dy", dy);
+      host.appendChild(s);
+      setTimeout(() => host.removeChild(s), 950);
+    }
+  }
+
+  function endGame(result){
+    active = false;
+
+    if (result.winner === "draw"){
+      scores.d++;
+      endTitle.textContent = "Draw! 🤝";
+      endMsg.textContent = "Nobody wins — try again!";
+      saveScores();
+      renderScores();
+      endOverlay.classList.remove("hidden");
+      sparkleBurst(boardEl);
+      return;
+    }
+
+    const w = result.winner;
+    if (w === X) {
+      scores.x++;
+      endTitle.textContent = "Santa wins! 🎅✨";
+      endMsg.textContent = "Ho ho ho! Nice line.";
+    } else {
+      scores.o++;
+      endTitle.textContent = "Reindeer wins! 🦌✨";
+      endMsg.textContent = "Fast hooves! Great job.";
+    }
+
+    // highlight winning line
+    if (result.line){
+      result.line.forEach(i => cells[i].classList.add("win"));
+    }
+
+    saveScores();
+    renderScores();
+    endOverlay.classList.remove("hidden");
+    sparkleBurst(boardEl);
+  }
+
+  function place(i){
+    if (!active) return;
+    if (board[i]) return;
+
+    board[i] = current;
+    cells[i].textContent = current;
+
+    const result = checkWinner();
+    if (result) {
+      endGame(result);
+      return;
+    }
+
+    current = (current === X) ? O : X;
+    setTurn();
+  }
+
+  cells.forEach(cell => {
+    cell.addEventListener("click", () => place(Number(cell.dataset.i)));
+  });
+
+  // Start / restart
+  startBtn.addEventListener("click", () => {
+    startOverlay.classList.add("hidden");
+    endOverlay.classList.add("hidden");
+    resetBoard();
+    active = true;
+    setTurn();
+
+    // try to start music if not muted
+    if (!music.paused && music.currentTime > 0) return;
+    if (volBtn.dataset.state === "on") {
+      music.play().catch(()=>{});
+    }
+  });
+
+  restartBtn.addEventListener("click", () => {
+    endOverlay.classList.add("hidden");
+    resetBoard();
+    active = true;
+  });
+
+  playAgainBtn.addEventListener("click", () => {
+    endOverlay.classList.add("hidden");
+    resetBoard();
+    active = true;
+  });
+
+  resetScoresBtn.addEventListener("click", () => {
+    scores = { x:0, o:0, d:0 };
+    saveScores();
+    renderScores();
+  });
+
+  // Volume (tap)
+  function setVolState(on){
+    volBtn.dataset.state = on ? "on" : "off";
+    volBtn.textContent = on ? "🔊" : "🔇";
+    if (!on){
+      music.pause();
+      music.currentTime = 0;
+    }
+  }
+
+  // default muted until user starts
+  setVolState(false);
+
+  volBtn.addEventListener("click", () => {
+    const on = volBtn.dataset.state !== "on";
+    setVolState(on);
+    if (on && !startOverlay.classList.contains("hidden")) {
+      // only play after a gesture — user clicked the button, so ok
+      music.play().catch(()=>{});
+    } else if (on && active) {
+      music.play().catch(()=>{});
+    }
+  });
+
+  // ✅ Secret reveal: long-press on volume (mobile Chrome-safe)
+  // - blocks context menu
+  // - uses pointer events
+  (function secretLongPress(){
+    // show if previously unlocked
+    try {
+      if (localStorage.getItem("xmasTTT_secret") === "true") {
+        secretLink.classList.add("show");
+        secretLink.setAttribute("aria-hidden","false");
+      }
+    } catch(e){}
+
+    const HOLD_MS = 2000;
+    let timer = null;
+
+    function showSecret(){
+      secretLink.classList.add("show");
+      secretLink.setAttribute("aria-hidden","false");
+      try { localStorage.setItem("xmasTTT_secret","true"); } catch(e){}
+      if (navigator.vibrate) navigator.vibrate(120);
+    }
+
+    function startHold(e){
+      if (e && e.preventDefault) e.preventDefault();
+      if (timer) clearTimeout(timer);
+      timer = setTimeout(showSecret, HOLD_MS);
+    }
+
+    function cancelHold(){
+      if (timer) { clearTimeout(timer); timer = null; }
+    }
+
+    volBtn.addEventListener("contextmenu", (ev) => ev.preventDefault());
+    volBtn.addEventListener("pointerdown", startHold);
+    volBtn.addEventListener("pointerup", cancelHold);
+    volBtn.addEventListener("pointercancel", cancelHold);
+    volBtn.addEventListener("pointerleave", cancelHold);
+  })();
+
+})();
+</script>
+</body>
+            </html>
