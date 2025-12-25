@@ -137,12 +137,12 @@ let oClick = function (event, i) {
 }
 
 ////////////////////////////////
-// ✅ Secret button: long-press on volume to reveal
+// ✅ Secret button: long-press on volume to reveal (mobile Chrome-safe)
 (function () {
   const secretBtn = document.getElementById("secretBtn");
   if (!secretBtn) return;
 
-  // If already unlocked, show immediately
+  // show if already unlocked
   try {
     if (localStorage.getItem("tttSecretUnlocked") === "true") {
       secretBtn.classList.add("show");
@@ -169,7 +169,9 @@ let oClick = function (event, i) {
   }
 
   function startHold(e) {
-    // Don’t interfere with click/tap toggling; we only start a timer.
+    // Prevent long-press from becoming image options menu
+    if (e && e.preventDefault) e.preventDefault();
+
     if (timer) clearTimeout(timer);
     timer = setTimeout(showSecret, HOLD_MS);
   }
@@ -181,19 +183,17 @@ let oClick = function (event, i) {
     }
   }
 
-  // Attach to BOTH images so it works whether volume is on/off
   const targets = [volumeOn, volumeOff].filter(Boolean);
 
   targets.forEach((el) => {
-    // Mobile
-    el.addEventListener("touchstart", startHold, { passive: true });
-    el.addEventListener("touchend", cancelHold);
-    el.addEventListener("touchcancel", cancelHold);
+    // Block image context menu on mobile Chrome
+    el.addEventListener("contextmenu", (ev) => ev.preventDefault());
 
-    // Desktop
-    el.addEventListener("mousedown", startHold);
-    el.addEventListener("mouseup", cancelHold);
-    el.addEventListener("mouseleave", cancelHold);
+    // Pointer events handle touch + mouse
+    el.addEventListener("pointerdown", startHold);
+    el.addEventListener("pointerup", cancelHold);
+    el.addEventListener("pointercancel", cancelHold);
+    el.addEventListener("pointerleave", cancelHold);
   });
 })();
 
@@ -218,6 +218,7 @@ for (let i = 0; i < volume.length; i++) {
     }
   })
 }
+
 volumeOn.addEventListener('mouseover', function () {
   volumeOff.style.display = 'flex'
   volumeOff.style.opacity = 0.35
@@ -250,4 +251,4 @@ for (let i = 0; i < cells.length; i++) {
       oClick(event, i)
     }
   })
-}
+    }
