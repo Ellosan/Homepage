@@ -50,6 +50,18 @@ body {
   display: inline-block;
 }
 
+/* ✅ Prevent mobile Chrome long-press image options menu */
+.volume,
+#volumeCont,
+#volumeBox,
+#volume-on,
+#volume-off {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+  touch-action: manipulation;
+}
+
 /* Volume Control */
 #volumeBox {
   grid-area: 3/17/6/19;
