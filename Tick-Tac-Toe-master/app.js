@@ -137,6 +137,66 @@ let oClick = function (event, i) {
 }
 
 ////////////////////////////////
+// ✅ Secret button: long-press on volume to reveal
+(function () {
+  const secretBtn = document.getElementById("secretBtn");
+  if (!secretBtn) return;
+
+  // If already unlocked, show immediately
+  try {
+    if (localStorage.getItem("tttSecretUnlocked") === "true") {
+      secretBtn.classList.add("show");
+      secretBtn.setAttribute("aria-hidden", "false");
+    }
+  } catch (e) {}
+
+  const HOLD_MS = 2000;
+  let timer = null;
+  let unlockedThisSession = false;
+
+  function showSecret() {
+    if (unlockedThisSession) return;
+    unlockedThisSession = true;
+
+    secretBtn.classList.add("show");
+    secretBtn.setAttribute("aria-hidden", "false");
+
+    try {
+      localStorage.setItem("tttSecretUnlocked", "true");
+    } catch (e) {}
+
+    if (navigator.vibrate) navigator.vibrate(120);
+  }
+
+  function startHold(e) {
+    // Don’t interfere with click/tap toggling; we only start a timer.
+    if (timer) clearTimeout(timer);
+    timer = setTimeout(showSecret, HOLD_MS);
+  }
+
+  function cancelHold() {
+    if (timer) {
+      clearTimeout(timer);
+      timer = null;
+    }
+  }
+
+  // Attach to BOTH images so it works whether volume is on/off
+  const targets = [volumeOn, volumeOff].filter(Boolean);
+
+  targets.forEach((el) => {
+    // Mobile
+    el.addEventListener("touchstart", startHold, { passive: true });
+    el.addEventListener("touchend", cancelHold);
+    el.addEventListener("touchcancel", cancelHold);
+
+    // Desktop
+    el.addEventListener("mousedown", startHold);
+    el.addEventListener("mouseup", cancelHold);
+    el.addEventListener("mouseleave", cancelHold);
+  });
+})();
+
 // Event Listeners Here
 
 //Volume Button Click Listener
@@ -168,8 +228,8 @@ volumeOn.addEventListener('mouseout', function () {
     volumeOff.style.opacity = 1
   }
 })
-//Start Screen Click Listeners
 
+//Start Screen Click Listeners
 gameStart.addEventListener('click', function () {
   startGame(start)
   gameAudio.play()
